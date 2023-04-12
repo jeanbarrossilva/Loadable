@@ -1,13 +1,7 @@
-package com.jeanbarrossilva.loadable
+package com.jeanbarrossilva.loadable.flow
 
 import app.cash.turbine.test
-import com.jeanbarrossilva.loadable.flow.filterIsFailed
-import com.jeanbarrossilva.loadable.flow.filterIsLoaded
-import com.jeanbarrossilva.loadable.flow.innerMap
-import com.jeanbarrossilva.loadable.flow.loadable
-import com.jeanbarrossilva.loadable.flow.loadableChannelFlow
-import com.jeanbarrossilva.loadable.flow.send
-import com.jeanbarrossilva.loadable.flow.unwrap
+import com.jeanbarrossilva.loadable.Loadable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
