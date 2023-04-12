@@ -7,7 +7,7 @@ import kotlin.test.assertNull
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-internal class SerializableExtensionsTests {
+internal class AnyExtensionsTests {
     @Test
     fun `GIVEN a Throwable WHEN converting it into a Loadable THEN it's failed`() {
         val throwable = NullPointerException()
