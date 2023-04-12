@@ -1,14 +1,11 @@
 package com.jeanbarrossilva.loadable
 
-import com.jeanbarrossilva.loadable.utils.ifLoaded
-import com.jeanbarrossilva.loadable.utils.map
-import com.jeanbarrossilva.loadable.utils.valueOrNull
+import kotlin.test.assertIs
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import kotlin.test.assertIs
 
 internal class LoadableTests {
     @Test
@@ -50,7 +47,7 @@ internal class LoadableTests {
     fun `GIVEN a Loaded Loadable WHEN mapping it THEN its value is transformed`() {
         assertEquals(
             Loadable.Loaded("Hello, ").map { it + "Jean!" },
-            Loadable.Loaded("Hello, Jean!"),
+            Loadable.Loaded("Hello, Jean!")
         )
     }
 

@@ -1,8 +1,8 @@
 package com.jeanbarrossilva.loadable.flow
 
 import com.jeanbarrossilva.loadable.Loadable
-import kotlinx.coroutines.channels.ProducerScope
 import java.io.Serializable
+import kotlinx.coroutines.channels.ProducerScope
 
 /**
  * Sends the given [element] as a [Loadable.Loaded].
