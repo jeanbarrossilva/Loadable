@@ -1,20 +1,20 @@
 package com.jeanbarrossilva.loadable
 
 import app.cash.turbine.test
-import com.jeanbarrossilva.loadable.utils.filterIsFailed
-import com.jeanbarrossilva.loadable.utils.filterIsLoaded
-import com.jeanbarrossilva.loadable.utils.innerMap
-import com.jeanbarrossilva.loadable.utils.loadable
-import com.jeanbarrossilva.loadable.utils.loadableChannelFlow
-import com.jeanbarrossilva.loadable.utils.send
-import com.jeanbarrossilva.loadable.utils.unwrap
-import java.io.Serializable
-import kotlin.test.Test
-import kotlin.test.assertIs
+import com.jeanbarrossilva.loadable.flow.filterIsFailed
+import com.jeanbarrossilva.loadable.flow.filterIsLoaded
+import com.jeanbarrossilva.loadable.flow.innerMap
+import com.jeanbarrossilva.loadable.flow.loadable
+import com.jeanbarrossilva.loadable.flow.loadableChannelFlow
+import com.jeanbarrossilva.loadable.flow.send
+import com.jeanbarrossilva.loadable.flow.unwrap
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import java.io.Serializable
+import kotlin.test.Test
+import kotlin.test.assertIs
 
 internal class FlowExtensionsTests {
     @Test

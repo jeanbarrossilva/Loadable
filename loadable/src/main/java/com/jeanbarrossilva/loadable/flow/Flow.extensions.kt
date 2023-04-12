@@ -1,13 +1,11 @@
-package com.jeanbarrossilva.loadable.utils
+package com.jeanbarrossilva.loadable.flow
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.LoadableScope
-import com.jeanbarrossilva.loadable.scope.FlowCollectorLoadableScope
-import java.io.Serializable
-import kotlin.experimental.ExperimentalTypeInference
+import com.jeanbarrossilva.loadable.utils.map
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -16,6 +14,8 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
+import java.io.Serializable
+import kotlin.experimental.ExperimentalTypeInference
 
 /** Collects the given [Flow] as a [State] with [Loadable.Loading] as its initial value. **/
 @Composable
@@ -90,7 +90,7 @@ fun <T : Serializable?> loadable(loading: suspend LoadableScope<T>.() -> Unit):
  **/
 @OptIn(ExperimentalTypeInference::class)
 fun <T : Serializable?> loadableChannelFlow(
-    @BuilderInference block: suspend ProducerScope<Loadable<T>>.() -> Unit
+    @BuilderInference block: suspend ProducerScope<Loadable<T>>.() -> Unit,
 ): Flow<Loadable<T>> {
     return channelFlow {
         send(Loadable.Loading())
