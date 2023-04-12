@@ -10,9 +10,8 @@ import java.io.Serializable
  * - [Throwable], [Loadable.Failed];
  * - non-`null` [T] (with [T] being a non-`null` type), [Loadable.Loaded];
  * - `null` (with [T] being a nullable type), [Loadable.Loaded];
- * - `null` (with [T] being a non-`null` type), [Loadable.Loading].
- *
- * When it doesn't match any of the aforementioned criteria, `null` is returned instead.
+ * - `null` (with [T] being a non-`null` type), [Loadable.Loading];
+ * - of a type other than [T]`?`, `null`.
  **/
 inline fun <reified T : Serializable?> Any?.loadable(): Loadable<T>? {
     return when (this) {
