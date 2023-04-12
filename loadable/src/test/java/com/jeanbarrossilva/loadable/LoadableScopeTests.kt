@@ -1,12 +1,12 @@
 package com.jeanbarrossilva.loadable
 
-import java.io.Serializable
-import kotlin.test.assertIs
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import java.io.Serializable
+import kotlin.test.assertIs
 
 internal class LoadableScopeTests {
     private val sent = mutableListOf<Loadable<Serializable?>>()
