@@ -1,7 +1,5 @@
-package com.jeanbarrossilva.loadable
+package com.jeanbarrossilva.loadable.list
 
-import com.jeanbarrossilva.loadable.list.serializableListOf
-import com.jeanbarrossilva.loadable.list.serialize
 import org.junit.Assert.assertEquals
 import kotlin.test.Test
 
