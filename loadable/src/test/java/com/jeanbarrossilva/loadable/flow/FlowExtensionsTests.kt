@@ -2,18 +2,18 @@ package com.jeanbarrossilva.loadable.flow
 
 import app.cash.turbine.test
 import com.jeanbarrossilva.loadable.Loadable
+import java.io.Serializable
+import kotlin.test.Test
+import kotlin.test.assertIs
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
-import java.io.Serializable
-import kotlin.test.Test
-import kotlin.test.assertIs
 
 internal class FlowExtensionsTests {
     @Test
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun `GIVEN a Loadable Flow built through a scope WHEN loading THEN a Loading has been emitted`() {
+    fun `GIVEN a Loadable Flow built through a scope WHEN loading THEN a Loading has been emitted`() { // ktlint-disable max-line-length
         runTest {
             loadable<Serializable?> { load() }.test {
                 repeat(2) { assertIs<Loadable.Loading<Serializable?>>(awaitItem()) }
@@ -46,7 +46,7 @@ internal class FlowExtensionsTests {
 
     @Test
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun `GIVEN a Loadable Flow WHEN collecting it THEN the value that's emitted first is a Loading one`() {
+    fun `GIVEN a Loadable Flow WHEN collecting it THEN the value that's emitted first is a Loading one`() { // ktlint-disable max-line-length
         runTest {
             loadable<Serializable>().test {
                 assertIs<Loadable.Loading<Serializable>>(awaitItem())
@@ -113,7 +113,7 @@ internal class FlowExtensionsTests {
 
     @Test
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun `GIVEN a Flow WHEN converting it into a Loadable one THEN the value that's emitted first is a Loaded one`() {
+    fun `GIVEN a Flow WHEN converting it into a Loadable one THEN the value that's emitted first is a Loaded one`() { // ktlint-disable max-line-length
         runTest {
             flow { emit(true) }.loadable().test {
                 assertIs<Loadable.Loading<Boolean>>(awaitItem())
@@ -125,7 +125,7 @@ internal class FlowExtensionsTests {
 
     @Test
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun `GIVEN a Flow WHEN converting it into a Loadable one THEN its values are emitted as Loaded`() {
+    fun `GIVEN a Flow WHEN converting it into a Loadable one THEN its values are emitted as Loaded`() { // ktlint-disable max-line-length
         runTest {
             flow {
                 emit("Hello, ")
@@ -144,7 +144,7 @@ internal class FlowExtensionsTests {
     @Test
     @Suppress("DIVISION_BY_ZERO")
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun `GIVEN a Flow WHEN converting it into a Loadable one THEN thrown exceptions are emitted as Failed`() {
+    fun `GIVEN a Flow WHEN converting it into a Loadable one THEN thrown exceptions are emitted as Failed`() { // ktlint-disable max-line-length
         runTest {
             flow<Serializable> { 0 / 0 }
                 .loadable()
@@ -159,7 +159,7 @@ internal class FlowExtensionsTests {
     @Test
     @Suppress("SpellCheckingInspection", "KotlinConstantConditions")
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun `GIVEN a Loadable Flow WHEN unwrapping it THEN only Loaded Loadables' values are emitted`() {
+    fun `GIVEN a Loadable Flow WHEN unwrapping it THEN only Loaded Loadables' values are emitted`() { // ktlint-disable max-line-length
         runTest {
             loadable<Int> {
                 load(8)
@@ -179,7 +179,7 @@ internal class FlowExtensionsTests {
     @Test
     @Suppress("CAST_NEVER_SUCCEEDS")
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun `GIVEN a Loadable ChannelFlow WHEN emitting from different scopes THEN it receives sent emissions`() {
+    fun `GIVEN a Loadable ChannelFlow WHEN emitting from different scopes THEN it receives sent emissions`() { // ktlint-disable max-line-length
         runTest {
             loadableChannelFlow {
                 send(2)

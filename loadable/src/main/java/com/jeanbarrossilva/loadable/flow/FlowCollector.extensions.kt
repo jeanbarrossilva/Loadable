@@ -1,8 +1,8 @@
 package com.jeanbarrossilva.loadable.flow
 
 import com.jeanbarrossilva.loadable.Loadable
-import kotlinx.coroutines.flow.FlowCollector
 import java.io.Serializable
+import kotlinx.coroutines.flow.FlowCollector
 
 /**
  * Emits the given [element] as a [Loadable.Loaded].

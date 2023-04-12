@@ -1,8 +1,8 @@
 package com.jeanbarrossilva.loadable.flow
 
 import com.jeanbarrossilva.loadable.Loadable
-import kotlinx.coroutines.flow.MutableStateFlow
 import java.io.Serializable
+import kotlinx.coroutines.flow.MutableStateFlow
 
 /** Creates a [MutableStateFlow] with a [Loadable.Loading] as its initial value. **/
 internal fun <T : Serializable?> loadable(): MutableStateFlow<Loadable<T>> {
