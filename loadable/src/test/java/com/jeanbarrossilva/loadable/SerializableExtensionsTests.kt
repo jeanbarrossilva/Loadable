@@ -1,6 +1,5 @@
 package com.jeanbarrossilva.loadable
 
-import com.jeanbarrossilva.loadable.utils.toLoadable
 import java.io.Serializable
 import kotlin.test.assertIs
 import org.junit.Assert.assertEquals
