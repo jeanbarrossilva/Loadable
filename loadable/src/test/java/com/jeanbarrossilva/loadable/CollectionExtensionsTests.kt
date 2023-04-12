@@ -1,9 +1,9 @@
 package com.jeanbarrossilva.loadable
 
-import com.jeanbarrossilva.loadable.utils.serializableListOf
-import com.jeanbarrossilva.loadable.utils.serialize
-import kotlin.test.Test
+import com.jeanbarrossilva.loadable.list.serializableListOf
+import com.jeanbarrossilva.loadable.list.serialize
 import org.junit.Assert.assertEquals
+import kotlin.test.Test
 
 internal class CollectionExtensionsTests {
     @Test

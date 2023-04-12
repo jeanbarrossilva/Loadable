@@ -1,6 +1,4 @@
-package com.jeanbarrossilva.loadable.utils
-
-import com.jeanbarrossilva.loadable.type.SerializableList
+package com.jeanbarrossilva.loadable.list
 
 /**
  * Creates a [SerializableList] without elements.
