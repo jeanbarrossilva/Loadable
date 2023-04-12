@@ -1,6 +1,5 @@
-package com.jeanbarrossilva.loadable.utils
+package com.jeanbarrossilva.loadable.list
 
-import com.jeanbarrossilva.loadable.type.SerializableList
 import java.io.Serializable
 
 /**
