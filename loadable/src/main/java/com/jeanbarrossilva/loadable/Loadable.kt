@@ -1,8 +1,8 @@
 package com.jeanbarrossilva.loadable
 
 import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
 import java.io.Serializable
+import kotlinx.parcelize.Parcelize
 
 /** Different stages of asynchronously-loaded content. **/
 sealed interface Loadable<T : Serializable?> : Parcelable {
