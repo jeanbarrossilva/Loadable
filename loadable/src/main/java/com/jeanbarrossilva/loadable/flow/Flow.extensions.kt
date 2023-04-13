@@ -13,15 +13,13 @@ import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.withIndex
 import kotlinx.coroutines.launch
 
 /** Collects the given [Flow] as a [State] with [Loadable.Loading] as its initial value. **/
@@ -64,10 +62,8 @@ fun <I : Serializable?, O : Serializable?> Flow<Loadable<I>>.innerMap(transform:
  * value will be shared.
  **/
 fun <T : Serializable?> Flow<T>.loadable(coroutineScope: CoroutineScope): StateFlow<Loadable<T>> {
-    return MutableStateFlow<Loadable<T>>(Loadable.Loading()).apply {
-        coroutineScope.launch {
-            emitAll(loadable().ignore(1))
-        }
+    return loadable(coroutineScope) {
+        collect(::load)
     }
 }
 
@@ -78,9 +74,9 @@ fun <T : Serializable?> Flow<T>.loadable(coroutineScope: CoroutineScope): StateF
  * thrown [Throwable]s.
  **/
 fun <T : Serializable?> Flow<T>.loadable(): Flow<Loadable<T>> {
-    return map<T, Loadable<T>> { Loadable.Loaded(it) }
-        .onStart { emit(Loadable.Loading()) }
-        .catchAsFailed()
+    return loadable<T> {
+        collect(::load)
+    }
 }
 
 /**
@@ -94,18 +90,40 @@ fun <T : Serializable?> Flow<Loadable<T>>.unwrap(): Flow<T> {
 }
 
 /**
- * Creates a [Flow] of [Loadable]s and emits them through [loading], with a [LoadableScope].
+ * Creates a [StateFlow] of [Loadable]s that's started and shared in the [coroutineScope] and emits
+ * them through [load] with a [LoadableScope]. Its initial [value][StateFlow.value] is
+ * [loading][Loadable.Loading].
  *
- * @param loading Operations to be made on the [LoadableScope] responsible for emitting [Loadable]s
+ * @param coroutineScope [CoroutineScope] in which the resulting [StateFlow] will be started and its
+ * value will be shared.
+ * @param load Operations to be made on the [LoadableScope] responsible for emitting [Loadable]s
+ * sent to it to the created [StateFlow].
+ **/
+fun <T : Serializable?> loadable(
+    coroutineScope: CoroutineScope,
+    load: suspend LoadableScope<T>.() -> Unit
+): StateFlow<Loadable<T>> {
+    return MutableStateFlow<Loadable<T>>(Loadable.Loading())
+        .apply {
+            coroutineScope.launch {
+                emitAll(nonLoadingLoadable(load))
+            }
+        }
+        .asStateFlow()
+}
+
+/**
+ * Creates a [Flow] of [Loadable]s that emits them through [load] with a [LoadableScope] and has an
+ * initial [loading][Loadable.Loading] value.
+ *
+ * @param load Operations to be made on the [LoadableScope] responsible for emitting [Loadable]s
  * sent to it to the created [Flow].
  **/
-fun <T : Serializable?> loadable(loading: suspend LoadableScope<T>.() -> Unit):
+fun <T : Serializable?> loadable(load: suspend LoadableScope<T>.() -> Unit):
     Flow<Loadable<T>> {
-    return flow {
-        FlowCollectorLoadableScope(this).apply {
-            load()
-            loading()
-        }
+    return nonLoadingLoadable {
+        load()
+        load.invoke(this)
     }
 }
 
@@ -134,13 +152,18 @@ private fun <T : Serializable?> Flow<Loadable<T>>.catchAsFailed(): Flow<Loadable
 }
 
 /**
- * Ignores the first [count] elements.
+ * Creates a [Flow] of [Loadable]s that emits them through [load] with a [LoadableScope] and
+ * doesn't have an initial [loading][Loadable.Loading] value.
  *
- * @param count Quantity of initial elements to be ignored. Ideally it'd be greater than zero, since
- * setting it as such simply wouldn't do anything.
- * @throws IllegalArgumentException When [count] is negative.
+ * @param load Operations to be made on the [LoadableScope] responsible for emitting [Loadable]s
+ * sent to it to the created [Flow].
  **/
-private fun <T> Flow<T>.ignore(count: Int): Flow<T> {
-    require(count >= 0) { "Count should be positive." }
-    return withIndex().filter { it.index >= count }.map { it.value }
+private fun <T : Serializable?> nonLoadingLoadable(load: suspend LoadableScope<T>.() -> Unit):
+    Flow<Loadable<T>> {
+    return flow<Loadable<T>> {
+        FlowCollectorLoadableScope(this).apply {
+            load.invoke(this)
+        }
+    }
+        .catchAsFailed()
 }
