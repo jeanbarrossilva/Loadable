@@ -8,14 +8,21 @@ import com.jeanbarrossilva.loadable.LoadableScope
 import com.jeanbarrossilva.loadable.map
 import java.io.Serializable
 import kotlin.experimental.ExperimentalTypeInference
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.withIndex
+import kotlinx.coroutines.launch
 
 /** Collects the given [Flow] as a [State] with [Loadable.Loading] as its initial value. **/
 @Composable
@@ -47,13 +54,33 @@ fun <I : Serializable?, O : Serializable?> Flow<Loadable<I>>.innerMap(transform:
     }
 }
 
-fun <T : Serializable?> Flow<T>.loadable(): Flow<Loadable<T>> {
-    return flow {
-        map { Loadable.Loaded(it) }
-            .onStart { emit(Loadable.Loading()) }
-            .catchAsFailed()
-            .collect(::emit)
+/**
+ * Maps each emission made to this [Flow] to a [Loadable].
+ *
+ * Emits, initially, [Loadable.Loading], [Loadable.Loaded] for each value and [Loadable.Failed] for
+ * thrown [Throwable]s.
+ *
+ * @param coroutineScope [CoroutineScope] in which the resulting [StateFlow] will be started and its
+ * value will be shared.
+ **/
+fun <T : Serializable?> Flow<T>.loadable(coroutineScope: CoroutineScope): StateFlow<Loadable<T>> {
+    return MutableStateFlow<Loadable<T>>(Loadable.Loading()).apply {
+        coroutineScope.launch {
+            emitAll(loadable().ignore(1))
+        }
     }
+}
+
+/**
+ * Maps each emission made to this [Flow] to a [Loadable].
+ *
+ * Emits, initially, [Loadable.Loading], [Loadable.Loaded] for each value and [Loadable.Failed] for
+ * thrown [Throwable]s.
+ **/
+fun <T : Serializable?> Flow<T>.loadable(): Flow<Loadable<T>> {
+    return map<T, Loadable<T>> { Loadable.Loaded(it) }
+        .onStart { emit(Loadable.Loading()) }
+        .catchAsFailed()
 }
 
 /**
@@ -104,4 +131,16 @@ private fun <T : Serializable?> Flow<Loadable<T>>.catchAsFailed(): Flow<Loadable
     return catch {
         emit(Loadable.Failed(it))
     }
+}
+
+/**
+ * Ignores the first [count] elements.
+ *
+ * @param count Quantity of initial elements to be ignored. Ideally it'd be greater than zero, since
+ * setting it as such simply wouldn't do anything.
+ * @throws IllegalArgumentException When [count] is negative.
+ **/
+private fun <T> Flow<T>.ignore(count: Int): Flow<T> {
+    require(count >= 0) { "Count should be positive." }
+    return withIndex().filter { it.index >= count }.map { it.value }
 }

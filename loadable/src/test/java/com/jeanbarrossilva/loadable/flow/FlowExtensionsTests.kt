@@ -7,6 +7,7 @@ import kotlin.test.Test
 import kotlin.test.assertIs
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 
@@ -153,6 +154,17 @@ internal class FlowExtensionsTests {
                     assertIs<ArithmeticException>(awaitItem().error)
                     awaitComplete()
                 }
+        }
+    }
+
+    @Test
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun `GIVEN a Flow WHEN converting it into a Loadable in a CoroutineScope THEN Loading is only emitted once as an initial value`() { // ktlint-disable max-line-length
+        runTest {
+            flowOf(0).loadable(this).test {
+                assertIs<Loadable.Loading<Int>>(awaitItem())
+                assertEquals(Loadable.Loaded(0), awaitItem())
+            }
         }
     }
 
