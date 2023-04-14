@@ -106,7 +106,7 @@ fun <T : Serializable?> loadable(
     return MutableStateFlow<Loadable<T>>(Loadable.Loading())
         .apply {
             coroutineScope.launch {
-                emitAll(nonLoadingLoadable(load))
+                emitAll(emptyLoadable(load))
             }
         }
         .asStateFlow()
@@ -121,7 +121,7 @@ fun <T : Serializable?> loadable(
  **/
 fun <T : Serializable?> loadable(load: suspend LoadableScope<T>.() -> Unit):
     Flow<Loadable<T>> {
-    return nonLoadingLoadable {
+    return emptyLoadable {
         load()
         load.invoke(this)
     }
@@ -152,13 +152,13 @@ private fun <T : Serializable?> Flow<Loadable<T>>.catchAsFailed(): Flow<Loadable
 }
 
 /**
- * Creates a [Flow] of [Loadable]s that emits them through [load] with a [LoadableScope] and
- * doesn't have an initial [loading][Loadable.Loading] value.
+ * Creates a [Flow] of [Loadable]s that emits them through [load] with a [LoadableScope]. Doesn't
+ * have any initial value (hence its emptiness).
  *
  * @param load Operations to be made on the [LoadableScope] responsible for emitting [Loadable]s
  * sent to it to the created [Flow].
  **/
-private fun <T : Serializable?> nonLoadingLoadable(load: suspend LoadableScope<T>.() -> Unit):
+private fun <T : Serializable?> emptyLoadable(load: suspend LoadableScope<T>.() -> Unit):
     Flow<Loadable<T>> {
     return flow<Loadable<T>> {
         FlowCollectorLoadableScope(this).apply {
