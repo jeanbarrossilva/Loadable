@@ -1,2 +1,2 @@
 rootProject.name = "Loadable"
-include(":app", ":loadable")
+include(":loadable")
