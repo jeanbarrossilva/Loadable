@@ -1,13 +1,10 @@
 package com.jeanbarrossilva.loadable
 
-import android.os.Parcelable
 import java.io.Serializable
-import kotlinx.parcelize.Parcelize
 
 /** Different stages of asynchronously-loaded content. **/
-sealed interface Loadable<T : Serializable?> : Parcelable {
+sealed interface Loadable<T : Serializable?> : Serializable {
     /** Stage in which the content is being loaded and, therefore, is temporarily unavailable. **/
-    @Parcelize
     class Loading<T : Serializable?> : Loadable<T> {
         override fun toString(): String {
             return "Loading"
@@ -19,7 +16,6 @@ sealed interface Loadable<T : Serializable?> : Parcelable {
      *
      * @param value Content that's been successfully loaded.
      **/
-    @Parcelize
     data class Loaded<T : Serializable?>(val value: T) : Loadable<T>
 
     /**
@@ -27,6 +23,5 @@ sealed interface Loadable<T : Serializable?> : Parcelable {
      *
      * @param error [Throwable] that's been thrown while trying to load the content.
      **/
-    @Parcelize
     data class Failed<T : Serializable?>(val error: Throwable) : Loadable<T>
 }
