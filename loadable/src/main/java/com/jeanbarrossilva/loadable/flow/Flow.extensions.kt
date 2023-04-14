@@ -53,7 +53,7 @@ fun <I : Serializable?, O : Serializable?> Flow<Loadable<I>>.innerMap(transform:
  * value will be shared.
  **/
 fun <T : Serializable?> Flow<T>.loadable(coroutineScope: CoroutineScope): StateFlow<Loadable<T>> {
-    return loadable(coroutineScope) {
+    return loadableFlow(coroutineScope) {
         collect(::load)
     }
 }
@@ -65,7 +65,7 @@ fun <T : Serializable?> Flow<T>.loadable(coroutineScope: CoroutineScope): StateF
  * thrown [Throwable]s.
  **/
 fun <T : Serializable?> Flow<T>.loadable(): Flow<Loadable<T>> {
-    return loadable<T> {
+    return loadableFlow<T> {
         collect(::load)
     }
 }
@@ -90,14 +90,14 @@ fun <T : Serializable?> Flow<Loadable<T>>.unwrap(): Flow<T> {
  * @param load Operations to be made on the [LoadableScope] responsible for emitting [Loadable]s
  * sent to it to the created [StateFlow].
  **/
-fun <T : Serializable?> loadable(
+fun <T : Serializable?> loadableFlow(
     coroutineScope: CoroutineScope,
     load: suspend LoadableScope<T>.() -> Unit
 ): StateFlow<Loadable<T>> {
     return MutableStateFlow<Loadable<T>>(Loadable.Loading())
         .apply {
             coroutineScope.launch {
-                emitAll(emptyLoadable(load))
+                emitAll(emptyLoadableFlow(load))
             }
         }
         .asStateFlow()
@@ -110,9 +110,9 @@ fun <T : Serializable?> loadable(
  * @param load Operations to be made on the [LoadableScope] responsible for emitting [Loadable]s
  * sent to it to the created [Flow].
  **/
-fun <T : Serializable?> loadable(load: suspend LoadableScope<T>.() -> Unit):
+fun <T : Serializable?> loadableFlow(load: suspend LoadableScope<T>.() -> Unit):
     Flow<Loadable<T>> {
-    return emptyLoadable {
+    return emptyLoadableFlow {
         load()
         load.invoke(this)
     }
@@ -149,7 +149,7 @@ private fun <T : Serializable?> Flow<Loadable<T>>.catchAsFailed(): Flow<Loadable
  * @param load Operations to be made on the [LoadableScope] responsible for emitting [Loadable]s
  * sent to it to the created [Flow].
  **/
-private fun <T : Serializable?> emptyLoadable(load: suspend LoadableScope<T>.() -> Unit):
+private fun <T : Serializable?> emptyLoadableFlow(load: suspend LoadableScope<T>.() -> Unit):
     Flow<Loadable<T>> {
     return flow<Loadable<T>> {
         FlowCollectorLoadableScope(this).apply {

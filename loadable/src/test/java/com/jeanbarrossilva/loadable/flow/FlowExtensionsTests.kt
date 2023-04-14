@@ -16,7 +16,7 @@ internal class FlowExtensionsTests {
     @OptIn(ExperimentalCoroutinesApi::class)
     fun `GIVEN a Loadable Flow built through a scope WHEN loading THEN a Loading has been emitted`() { // ktlint-disable max-line-length
         runTest {
-            loadable<Serializable?> { load() }.test {
+            loadableFlow<Serializable?> { load() }.test {
                 repeat(2) { assertIs<Loadable.Loading<Serializable?>>(awaitItem()) }
                 awaitComplete()
             }
@@ -27,7 +27,7 @@ internal class FlowExtensionsTests {
     @OptIn(ExperimentalCoroutinesApi::class)
     fun `GIVEN a Loadable Flow built through a scope WHEN loaded THEN a Loaded has been emitted`() {
         runTest {
-            loadable<Serializable?> { load(null) }.unwrap().test {
+            loadableFlow<Serializable?> { load(null) }.unwrap().test {
                 assertEquals(null, awaitItem())
                 awaitComplete()
             }
@@ -38,7 +38,7 @@ internal class FlowExtensionsTests {
     @OptIn(ExperimentalCoroutinesApi::class)
     fun `GIVEN a Loadable Flow built through a scope WHEN failed THEN a Failed has been emitted`() {
         runTest {
-            loadable<Serializable?> { fail(NullPointerException()) }.filterIsFailed().test {
+            loadableFlow<Serializable?> { fail(NullPointerException()) }.filterIsFailed().test {
                 awaitItem()
                 awaitComplete()
             }
@@ -76,7 +76,7 @@ internal class FlowExtensionsTests {
     @OptIn(ExperimentalCoroutinesApi::class)
     fun `GIVEN a Loadable Flow WHEN filtering Loaded values THEN they're all emitted`() {
         runTest {
-            loadable<String> {
+            loadableFlow {
                 load("Getting to it...")
                 load()
                 fail(Throwable())
@@ -96,7 +96,7 @@ internal class FlowExtensionsTests {
     @OptIn(ExperimentalCoroutinesApi::class)
     fun `GIVEN a Loadable Flow WHEN inner-mapping it THEN the emitted values are transformed`() {
         runTest {
-            loadable<Int> {
+            loadableFlow {
                 load(1)
                 load(2)
                 load(3)
@@ -173,7 +173,7 @@ internal class FlowExtensionsTests {
     @OptIn(ExperimentalCoroutinesApi::class)
     fun `GIVEN a Loadable Flow WHEN unwrapping it THEN only Loaded Loadables' values are emitted`() { // ktlint-disable max-line-length
         runTest {
-            loadable<Int> {
+            loadableFlow {
                 load(8)
                 fail(Throwable())
                 load()
