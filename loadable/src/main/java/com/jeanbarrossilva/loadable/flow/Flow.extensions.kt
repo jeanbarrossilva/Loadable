@@ -1,8 +1,5 @@
 package com.jeanbarrossilva.loadable.flow
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.LoadableScope
 import com.jeanbarrossilva.loadable.map
@@ -21,12 +18,6 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-
-/** Collects the given [Flow] as a [State] with [Loadable.Loading] as its initial value. **/
-@Composable
-fun <T : Serializable?> Flow<Loadable<T>>.collectAsState(): State<Loadable<T>> {
-    return collectAsState(initial = Loadable.Loading())
-}
 
 /** Returns a [Flow] containing only [failed][Loadable.Failed] values. **/
 fun <T : Serializable?> Flow<Loadable<T>>.filterIsFailed(): Flow<Loadable.Failed<T>> {
