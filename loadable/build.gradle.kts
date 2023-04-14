@@ -54,10 +54,6 @@ android {
         }
     }
 
-    buildFeatures {
-        compose = true
-    }
-
     compileOptions {
         sourceCompatibility = Versions.java
         targetCompatibility = Versions.java
@@ -66,15 +62,10 @@ android {
     kotlinOptions {
         jvmTarget = Versions.java.toString()
     }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = Versions.COMPOSE_COMPILER
-    }
 }
 
 @Suppress("SpellCheckingInspection")
 dependencies {
-    implementation(Libraries.COMPOSE_RUNTIME)
     implementation(Libraries.VIEWMODEL_COMPOSE)
     implementation(Libraries.KOTLINX_COROUTINES_CORE)
 
