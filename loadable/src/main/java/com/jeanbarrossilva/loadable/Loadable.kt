@@ -12,12 +12,12 @@ sealed interface Loadable<T : Serializable?> : Serializable {
     }
 
     /**
-     * Stage in which the content has been loaded and is represented by [value].
+     * Stage in which the content has been successfully loaded.
      *
-     * @param value Content that's been successfully loaded.
+     * @param content Value that's been loaded.
      **/
     @JvmInline
-    value class Loaded<T : Serializable?>(val value: T) : Loadable<T>
+    value class Loaded<T : Serializable?>(val content: T) : Loadable<T>
 
     /**
      * Stage in which the content has failed to load and threw [error].

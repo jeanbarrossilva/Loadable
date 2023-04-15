@@ -10,12 +10,12 @@ abstract class LoadableScope<T : Serializable?> internal constructor() {
     }
 
     /**
-     * Sends a [Loadable.Loaded] with the given [value].
+     * Sends a [Loadable.Loaded] with the given [content].
      *
-     * @param value Value to be set as the [Loadable.Loaded.value].
+     * @param content Value to be set as the [Loadable.Loaded.content].
      **/
-    suspend fun load(value: T) {
-        send(Loadable.Loaded(value))
+    suspend fun load(content: T) {
+        send(Loadable.Loaded(content))
     }
 
     /**

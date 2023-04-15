@@ -74,17 +74,17 @@ fun <T : Serializable?> Flow<T>.loadable(): Flow<Loadable<T>> {
 
 /**
  * Unwraps [Loadable.Loaded] emissions and returns a [Flow] containing only their
- * [Loadable.Loaded.value]s.
+ * [content][Loadable.Loaded.content]s.
  **/
 fun <T : Serializable?> Flow<Loadable<T>>.unwrap(): Flow<T> {
     return filterIsLoaded().map {
-        it.value
+        it.content
     }
 }
 
 /**
  * Unwraps [Loadable.Loaded] emissions and returns a [Flow] containing only those that have a
- * non-`null` [value][Loadable.Loaded.value].
+ * non-`null` [content][Loadable.Loaded.content].
  **/
 fun <T : Serializable> Flow<Loadable<T?>>.unwrapContent(): Flow<Loadable<T>> {
     @Suppress("UNCHECKED_CAST")

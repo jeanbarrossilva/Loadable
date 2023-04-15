@@ -9,18 +9,18 @@ import org.junit.Test
 
 internal class LoadableTests {
     @Test
-    fun `GIVEN a Loading Loadable WHEN getting its value THEN it's null`() {
-        assertNull(Loadable.Loading<Int>().valueOrNull)
+    fun `GIVEN a Loading Loadable WHEN getting its content THEN it's null`() {
+        assertNull(Loadable.Loading<Int>().contentOrNull)
     }
 
     @Test
-    fun `GIVEN a Loaded Loadable WHEN getting its value THEN it isn't null`() {
-        assertEquals(0, Loadable.Loaded(0).valueOrNull)
+    fun `GIVEN a Loaded Loadable WHEN getting its content THEN it isn't null`() {
+        assertEquals(0, Loadable.Loaded(0).contentOrNull)
     }
 
     @Test
-    fun `GIVEN a Failed Loadable WHEN getting its value THEN it's null`() {
-        assertNull(Loadable.Failed<Int>(Throwable()).valueOrNull)
+    fun `GIVEN a Failed Loadable WHEN getting its content THEN it's null`() {
+        assertNull(Loadable.Failed<Int>(Throwable()).contentOrNull)
     }
 
     @Test
@@ -44,7 +44,7 @@ internal class LoadableTests {
     }
 
     @Test
-    fun `GIVEN a Loaded Loadable WHEN mapping it THEN its value is transformed`() {
+    fun `GIVEN a Loaded Loadable WHEN mapping it THEN its content is transformed`() {
         assertEquals(
             Loadable.Loaded("Hello, ").map { it + "Jean!" },
             Loadable.Loaded("Hello, Jean!")
