@@ -60,7 +60,7 @@ CoroutineScope(Dispatchers.IO).launch {
             withContext(Dispatchers.Main) {
                 when (it) {
                     is Loadable.Loading -> display("Loading...")
-                    is Loadable.Loaded -> display(it.value)
+                    is Loadable.Loaded -> display(it.content)
                     is Loadable.Failed -> display(it.error.message)
                 }
             }
