@@ -47,10 +47,20 @@ internal class FlowExtensionsTests {
 
     @Test
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun `GIVEN a Loadable Flow WHEN collecting it THEN the value that's emitted first is a Loading one`() { // ktlint-disable max-line-length
+    fun `GIVEN a Loadable Flow without an initial content WHEN collecting it THEN the value that's emitted first is a Loading one`() { // ktlint-disable max-line-length
         runTest {
-            loadable<Serializable>().test {
+            loadableFlow<Serializable>().test {
                 assertIs<Loadable.Loading<Serializable>>(awaitItem())
+            }
+        }
+    }
+
+    @Test
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun `GIVEN a Loadable Flow with an initial content WHEN collecting it THEN the value that's emitted first is a Loaded one`() {
+        runTest {
+            loadableFlowOf(0).test {
+                assertEquals(Loadable.Loaded(0), awaitItem())
             }
         }
     }
