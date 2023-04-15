@@ -57,7 +57,7 @@ internal class FlowExtensionsTests {
 
     @Test
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun `GIVEN a Loadable Flow with an initial content WHEN collecting it THEN the value that's emitted first is a Loaded one`() {
+    fun `GIVEN a Loadable Flow with an initial content WHEN collecting it THEN the value that's emitted first is a Loaded one`() { // ktlint-disable max-line-length
         runTest {
             loadableFlowOf(0).test {
                 assertEquals(Loadable.Loaded(0), awaitItem())
