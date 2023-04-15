@@ -9,7 +9,6 @@ import kotlin.experimental.ExperimentalTypeInference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
@@ -107,7 +106,7 @@ fun <T : Serializable?> loadableFlow(
     coroutineScope: CoroutineScope,
     load: suspend LoadableScope<T>.() -> Unit
 ): StateFlow<Loadable<T>> {
-    return MutableStateFlow<Loadable<T>>(Loadable.Loading())
+    return loadableFlow<T>()
         .apply {
             coroutineScope.launch {
                 emitAll(emptyLoadableFlow(load))
