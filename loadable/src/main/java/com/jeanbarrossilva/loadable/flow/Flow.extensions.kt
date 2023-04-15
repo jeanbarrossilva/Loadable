@@ -2,6 +2,7 @@ package com.jeanbarrossilva.loadable.flow
 
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.LoadableScope
+import com.jeanbarrossilva.loadable.ifLoaded
 import com.jeanbarrossilva.loadable.map
 import java.io.Serializable
 import kotlin.experimental.ExperimentalTypeInference
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -65,7 +67,7 @@ fun <T : Serializable?> Flow<T>.loadable(coroutineScope: CoroutineScope): StateF
  * thrown [Throwable]s.
  **/
 fun <T : Serializable?> Flow<T>.loadable(): Flow<Loadable<T>> {
-    return loadableFlow<T> {
+    return loadableFlow {
         collect(::load)
     }
 }
@@ -78,6 +80,17 @@ fun <T : Serializable?> Flow<Loadable<T>>.unwrap(): Flow<T> {
     return filterIsLoaded().map {
         it.value
     }
+}
+
+/**
+ * Unwraps [Loadable.Loaded] emissions and returns a [Flow] containing only those that have a
+ * non-`null` [value][Loadable.Loaded.value].
+ **/
+fun <T : Serializable> Flow<Loadable<T?>>.unwrapContent(): Flow<Loadable<T>> {
+    @Suppress("UNCHECKED_CAST")
+    return filter {
+        it.ifLoaded { this != null } ?: true
+    } as Flow<Loadable<T>>
 }
 
 /**
@@ -135,13 +148,6 @@ fun <T : Serializable?> loadableChannelFlow(
         .catchAsFailed()
 }
 
-/** Catches thrown exceptions by emitting a [Loadable.Failed]. **/
-private fun <T : Serializable?> Flow<Loadable<T>>.catchAsFailed(): Flow<Loadable<T>> {
-    return catch {
-        emit(Loadable.Failed(it))
-    }
-}
-
 /**
  * Creates a [Flow] of [Loadable]s that emits them through [load] with a [LoadableScope]. Doesn't
  * have any initial value (hence its emptiness).
@@ -149,7 +155,7 @@ private fun <T : Serializable?> Flow<Loadable<T>>.catchAsFailed(): Flow<Loadable
  * @param load Operations to be made on the [LoadableScope] responsible for emitting [Loadable]s
  * sent to it to the created [Flow].
  **/
-private fun <T : Serializable?> emptyLoadableFlow(load: suspend LoadableScope<T>.() -> Unit):
+internal fun <T : Serializable?> emptyLoadableFlow(load: suspend LoadableScope<T>.() -> Unit):
     Flow<Loadable<T>> {
     return flow<Loadable<T>> {
         FlowCollectorLoadableScope(this).apply {
@@ -157,4 +163,11 @@ private fun <T : Serializable?> emptyLoadableFlow(load: suspend LoadableScope<T>
         }
     }
         .catchAsFailed()
+}
+
+/** Catches thrown exceptions by emitting a [Loadable.Failed]. **/
+private fun <T : Serializable?> Flow<Loadable<T>>.catchAsFailed(): Flow<Loadable<T>> {
+    return catch {
+        emit(Loadable.Failed(it))
+    }
 }

@@ -159,7 +159,7 @@ internal class FlowExtensionsTests {
 
     @Test
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun `GIVEN a Flow WHEN converting it into a Loadable in a CoroutineScope THEN Loading is only emitted once as an initial value`() { // ktlint-disable max-line-length
+    fun `GIVEN a Flow WHEN converting it into a Loadable one in a CoroutineScope THEN Loading is only emitted once as an initial value`() { // ktlint-disable max-line-length
         runTest {
             flowOf(0).loadable(this).test {
                 assertIs<Loadable.Loading<Int>>(awaitItem())
@@ -183,6 +183,25 @@ internal class FlowExtensionsTests {
                 .test {
                     assertEquals(8, awaitItem())
                     assertEquals(16, awaitItem())
+                    awaitComplete()
+                }
+        }
+    }
+
+    @Test
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun `GIVEN a Loadable Flow WHEN unwrapping its content THEN only Loaded values with non-null content are emitted`() { // ktlint-disable max-line-length
+        runTest {
+            emptyLoadableFlow {
+                load(null)
+                load(0)
+                load(null)
+                load(1)
+            }
+                .unwrapContent()
+                .test {
+                    assertEquals(Loadable.Loaded(0), awaitItem())
+                    assertEquals(Loadable.Loaded(1), awaitItem())
                     awaitComplete()
                 }
         }
