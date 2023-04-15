@@ -16,12 +16,14 @@ sealed interface Loadable<T : Serializable?> : Serializable {
      *
      * @param value Content that's been successfully loaded.
      **/
-    data class Loaded<T : Serializable?>(val value: T) : Loadable<T>
+    @JvmInline
+    value class Loaded<T : Serializable?>(val value: T) : Loadable<T>
 
     /**
      * Stage in which the content has failed to load and threw [error].
      *
      * @param error [Throwable] that's been thrown while trying to load the content.
      **/
-    data class Failed<T : Serializable?>(val error: Throwable) : Loadable<T>
+    @JvmInline
+    value class Failed<T : Serializable?>(val error: Throwable) : Loadable<T>
 }
