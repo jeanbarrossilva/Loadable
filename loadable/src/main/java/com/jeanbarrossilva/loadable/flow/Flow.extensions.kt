@@ -9,6 +9,7 @@ import kotlin.experimental.ExperimentalTypeInference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
@@ -128,6 +129,16 @@ fun <T : Serializable?> loadableFlow(load: suspend LoadableScope<T>.() -> Unit):
         load()
         load.invoke(this)
     }
+}
+
+/** Creates a [MutableStateFlow] with a [Loadable.Loading] as its initial value. **/
+fun <T : Serializable?> loadableFlow(): MutableStateFlow<Loadable<T>> {
+    return MutableStateFlow(Loadable.Loading())
+}
+
+/** Creates a [MutableStateFlow] with a [Loadable.Loaded] that wraps the given [content]. **/
+fun <T : Serializable?> loadableFlowOf(content: T): MutableStateFlow<Loadable<T>> {
+    return MutableStateFlow(Loadable.Loaded(content))
 }
 
 /**
