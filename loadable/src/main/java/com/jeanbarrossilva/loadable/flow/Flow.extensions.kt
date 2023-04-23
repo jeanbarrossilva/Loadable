@@ -135,8 +135,7 @@ fun <T : Serializable?> loadableFlow(
  * @param load Operations to be made on the [LoadableScope] responsible for emitting [Loadable]s
  * sent to it to the created [Flow].
  **/
-fun <T : Serializable?> loadableFlow(load: suspend LoadableScope<T>.() -> Unit):
-    Flow<Loadable<T>> {
+fun <T : Serializable?> loadableFlow(load: suspend LoadableScope<T>.() -> Unit): Flow<Loadable<T>> {
     return emptyLoadableFlow {
         load()
         load.invoke(this)
