@@ -37,24 +37,30 @@ Stage in which the content has been successfully loaded. Holds the content itsel
 
 ### `Failed`
 
-Stage in which the content has failed to load and threw an error. Holds a [`Throwable`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/).
+Stage in which the content has failed to load and threw an error. Holds a
+[`Throwable`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/).
 
 ## Usage
 
-Loadable relies heavily on Kotlin's [coroutines](https://kotlinlang.org/docs/coroutines-overview.html) and [`Flow`](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow)s, offering functions and extensions that can, in turn, convert any (literally, [`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/)) structure or, specifically, [`Flow`](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/)s into loadable data.
+Loadable relies heavily on Kotlin's
+[coroutines](https://kotlinlang.org/docs/coroutines-overview.html) and
+[`Flow`](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow)s,
+offering functions and extensions that can, in turn, convert any (literally,
+[`Any`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/)) structure or, specifically,
+[`Flow`](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/)s
+into loadable data.
 
-Suppose, for example, that we have an app in which we want to display a sequence of numbers fetched from the server, and also inform whether it's loading or if it has failed:
+Suppose, for example, that we have an app in which we want to display a sequence of numbers fetched
+from the server, and also inform whether it's loading or if it has failed:
 
 ```kotlin
 CoroutineScope(Dispatchers.IO).launch {
-    loadableFlow {
+    loadableFlow { // this: LoadableScope<Int>
         // `getNumbersFlow` is a suspending network call that returns Flow<Int>.
-        getNumbersFlow().collect {
-            // `load` is one of the methods of the LoadableScope<T> provided by `loadableFlow`,
-            // which simply emits the collected value from `getNumbersFlow` to the
-            // `loadableFlow` itself.
-            load(it)
-        }
+        getNumbersFlow()
+        // `loadTo` is a terminal operator that turns `Flow<Int>` into a `Flow<Loadable<Int>>` and
+        // emits all of its Loadables to the outer `loadableFlow`.
+            .loadTo(this)
     }
         .collect {
             withContext(Dispatchers.Main) {
@@ -68,7 +74,11 @@ CoroutineScope(Dispatchers.IO).launch {
 }
 ```
 
-In this scenario, `loadableFlow` was used purely because it has a lambda through which we can collect other [`Flow`](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow)s suspendingly and `getNumbersFlow` is a suspending function. If that wasn't the case and we wanted to just transform a `Flow<T>` into a `Flow<Loadable<T>>`, it could be accomplished by one of the following:
+In this scenario, `loadableFlow` was used purely because it has a lambda through which we can
+collect other [`Flow`](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow)s
+suspendingly and `getNumbersFlow` is a suspending function. If that wasn't the case and we wanted to
+just transform a `Flow<T>` into a `Flow<Loadable<T>>`, it could be accomplished by one of the
+following:
 
 ```kotlin
 val coroutineScope = CoroutineScope(Dispatchers.IO)
