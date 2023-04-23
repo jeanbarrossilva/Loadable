@@ -173,7 +173,7 @@ fun <T : Serializable?> loadableChannelFlow(
  * @param load Operations to be made on the [LoadableScope] responsible for emitting [Loadable]s
  * sent to it to the created [Flow].
  **/
-internal fun <T : Serializable?> emptyLoadableFlow(load: suspend LoadableScope<T>.() -> Unit = { }):
+internal fun <T : Serializable?> emptyLoadableFlow(load: suspend LoadableScope<T>.() -> Unit):
     Flow<Loadable<T>> {
     return flow<Loadable<T>> {
         FlowCollectorLoadableScope(this).apply {
