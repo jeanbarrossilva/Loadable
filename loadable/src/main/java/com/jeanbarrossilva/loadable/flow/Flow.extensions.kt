@@ -201,7 +201,7 @@ internal fun <T : Serializable?> emptyLoadableFlow(load: suspend LoadableScope<T
  * setting it as such simply wouldn't do anything.
  * @throws IllegalArgumentException When [count] is negative.
  **/
-internal fun <T> Flow<T>.ignore(count: Int): Flow<T> {
+private fun <T> Flow<T>.ignore(count: Int): Flow<T> {
     require(count >= 0) { "Count should be positive." }
     return withIndex().filter { it.index >= count }.map { it.value }
 }
