@@ -179,7 +179,7 @@ internal class FlowExtensionsTests {
     }
 
     @Test
-    @Suppress("SpellCheckingInspection", "KotlinConstantConditions")
+    @Suppress("SpellCheckingInspection")
     @OptIn(ExperimentalCoroutinesApi::class)
     fun `GIVEN a Loadable Flow WHEN unwrapping it THEN only Loaded Loadables' contents are emitted`() { // ktlint-disable max-line-length
         runTest {
