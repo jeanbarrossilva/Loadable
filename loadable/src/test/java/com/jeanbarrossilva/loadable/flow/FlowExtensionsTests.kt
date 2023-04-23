@@ -218,6 +218,43 @@ internal class FlowExtensionsTests {
     }
 
     @Test
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun `GIVEN a Loadable Flow that's Loading WHEN loading it into a LoadableScope THEN it loads`() { // ktlint-disable max-line-length
+        runTest {
+            emptyLoadableFlow(loadableFlow<Serializable?>()::loadInto).test {
+                assertIs<Loadable.Loading<Serializable?>>(awaitItem())
+            }
+        }
+    }
+
+    @Test
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun `GIVEN a Loadable Flow that's Loaded WHEN loading it into a LoadableScope THEN it loads the content`() { // ktlint-disable max-line-length
+        runTest {
+            loadableFlow(loadableFlowOf(0)::loadInto).test {
+                awaitItem()
+                assertEquals(Loadable.Loaded(0), awaitItem())
+            }
+        }
+    }
+
+    @Test
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun `GIVEN a Loadable Flow that's Failed WHEN loading it into a LoadableScope THEN it fails`() {
+        val error = Throwable()
+        runTest {
+            loadableFlow {
+                emptyLoadableFlow<Serializable?> { fail(error) }.loadInto(this)
+            }
+                .test {
+                    awaitItem()
+                    assertEquals(Loadable.Failed<Serializable?>(error), awaitItem())
+                    awaitComplete()
+                }
+        }
+    }
+
+    @Test
     @Suppress("CAST_NEVER_SUCCEEDS")
     @OptIn(ExperimentalCoroutinesApi::class)
     fun `GIVEN a Loadable ChannelFlow WHEN emitting from different scopes THEN it receives sent emissions`() { // ktlint-disable max-line-length
