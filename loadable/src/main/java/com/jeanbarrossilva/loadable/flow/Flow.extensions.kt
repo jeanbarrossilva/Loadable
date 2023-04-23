@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.withIndex
 import kotlinx.coroutines.launch
 
 /** Returns a [Flow] containing only [failed][Loadable.Failed] values. **/
@@ -72,8 +73,25 @@ fun <T : Serializable?> Flow<T>.loadable(): Flow<Loadable<T>> {
 }
 
 /**
- * Terminal operator that sends [Loadable]s emitted to this [Flow] into the given [loadableScope],
- * analogue to calling its...
+ * Terminal operator that turns this into a [Loadable][Loadable] [Flow] and sends its [Loadable]s to
+ * the given [loadableScope]. Analogue to calling its...
+ *
+ * - [LoadableScope.load] when [loading][Loadable.Loading];
+ * - [LoadableScope.load] with the [content][Loadable.Loaded.content] when
+ * [loaded][Loadable.Loaded];
+ * - [LoadableScope.fail] with the [error][Loadable.Failed.error] when [failed][Loadable.Failed].
+ **/
+suspend fun <T : Serializable?> Flow<T>.loadTo(loadableScope: LoadableScope<T>) {
+    loadable()
+        // Ignores the initial loading stage, since public Loadable-Flow-creator functions'
+        // LoadableScope always loads.
+        .ignore(1)
+        .sendTo(loadableScope)
+}
+
+/**
+ * Terminal operator that sends [Loadable]s emitted to this [Flow] to the given [loadableScope].
+ * Analogue to calling its...
  *
  * - [LoadableScope.load] when [loading][Loadable.Loading];
  * - [LoadableScope.load] with the [content][Loadable.Loaded.content] when
@@ -174,6 +192,18 @@ internal fun <T : Serializable?> emptyLoadableFlow(load: suspend LoadableScope<T
         }
     }
         .catchAsFailed()
+}
+
+/**
+ * Ignores the first [count] elements.
+ *
+ * @param count Quantity of initial elements to be ignored. Ideally it'd be greater than zero, since
+ * setting it as such simply wouldn't do anything.
+ * @throws IllegalArgumentException When [count] is negative.
+ **/
+internal fun <T> Flow<T>.ignore(count: Int): Flow<T> {
+    require(count >= 0) { "Count should be positive." }
+    return withIndex().filter { it.index >= count }.map { it.value }
 }
 
 /** Catches thrown exceptions by emitting a [Loadable.Failed]. **/
