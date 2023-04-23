@@ -12,8 +12,8 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 
 internal class FlowExtensionsTests {
-    @Test
     @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
     fun `GIVEN a Loadable Flow built through a scope WHEN loading THEN a Loading has been emitted`() { // ktlint-disable max-line-length
         runTest {
             loadableFlow<Serializable?> { load() }.test {
@@ -23,8 +23,8 @@ internal class FlowExtensionsTests {
         }
     }
 
-    @Test
     @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
     fun `GIVEN a Loadable Flow built through a scope WHEN loaded THEN a Loaded has been emitted`() {
         runTest {
             loadableFlow<Serializable?> { load(null) }.unwrap().test {
@@ -34,8 +34,8 @@ internal class FlowExtensionsTests {
         }
     }
 
-    @Test
     @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
     fun `GIVEN a Loadable Flow built through a scope WHEN failed THEN a Failed has been emitted`() {
         runTest {
             loadableFlow<Serializable?> { fail(NullPointerException()) }.filterIsFailed().test {
@@ -45,8 +45,8 @@ internal class FlowExtensionsTests {
         }
     }
 
-    @Test
     @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
     fun `GIVEN a Loadable Flow without an initial content WHEN collecting it THEN the value that's emitted first is a Loading one`() { // ktlint-disable max-line-length
         runTest {
             loadableFlow<Serializable>().test {
@@ -55,8 +55,8 @@ internal class FlowExtensionsTests {
         }
     }
 
-    @Test
     @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
     fun `GIVEN a Loadable Flow with an initial content WHEN collecting it THEN the value that's emitted first is a Loaded one`() { // ktlint-disable max-line-length
         runTest {
             loadableFlowOf(0).test {
@@ -65,8 +65,8 @@ internal class FlowExtensionsTests {
         }
     }
 
-    @Test
     @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
     fun `GIVEN a Loadable Flow WHEN filtering Failed values THEN they're all emitted`() {
         runTest {
             flow {
@@ -82,8 +82,8 @@ internal class FlowExtensionsTests {
         }
     }
 
-    @Test
     @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
     fun `GIVEN a Loadable Flow WHEN filtering Loaded values THEN they're all emitted`() {
         runTest {
             loadableFlow {
@@ -102,8 +102,8 @@ internal class FlowExtensionsTests {
         }
     }
 
-    @Test
     @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
     fun `GIVEN a Loadable Flow WHEN inner-mapping it THEN the emitted values are transformed`() {
         runTest {
             loadableFlow {
@@ -122,8 +122,8 @@ internal class FlowExtensionsTests {
         }
     }
 
-    @Test
     @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
     fun `GIVEN a Flow WHEN converting it into a Loadable one THEN the value that's emitted first is a Loaded one`() { // ktlint-disable max-line-length
         runTest {
             flow { emit(true) }.loadable().test {
@@ -134,8 +134,8 @@ internal class FlowExtensionsTests {
         }
     }
 
-    @Test
     @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
     fun `GIVEN a Flow WHEN converting it into a Loadable one THEN its values are emitted as Loaded`() { // ktlint-disable max-line-length
         runTest {
             flow {
@@ -152,9 +152,9 @@ internal class FlowExtensionsTests {
         }
     }
 
-    @Test
-    @Suppress("DIVISION_BY_ZERO")
     @OptIn(ExperimentalCoroutinesApi::class)
+    @Suppress("DIVISION_BY_ZERO")
+    @Test
     fun `GIVEN a Flow WHEN converting it into a Loadable one THEN thrown exceptions are emitted as Failed`() { // ktlint-disable max-line-length
         runTest {
             flow<Serializable> { 0 / 0 }
@@ -167,8 +167,8 @@ internal class FlowExtensionsTests {
         }
     }
 
-    @Test
     @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
     fun `GIVEN a Flow WHEN converting it into a Loadable one in a CoroutineScope THEN Loading is only emitted once as an initial value`() { // ktlint-disable max-line-length
         runTest {
             flowOf(0).loadable(this).test {
@@ -178,9 +178,9 @@ internal class FlowExtensionsTests {
         }
     }
 
-    @Test
     @OptIn(ExperimentalCoroutinesApi::class)
     @Suppress("SpellCheckingInspection")
+    @Test
     fun `GIVEN a Loadable Flow WHEN unwrapping it THEN only Loaded Loadables' contents are emitted`() { // ktlint-disable max-line-length
         runTest {
             loadableFlow {
@@ -198,8 +198,8 @@ internal class FlowExtensionsTests {
         }
     }
 
-    @Test
     @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
     fun `GIVEN a Loadable Flow WHEN unwrapping its content THEN only Loaded values with non-null content are emitted`() { // ktlint-disable max-line-length
         runTest {
             emptyLoadableFlow {
@@ -217,9 +217,9 @@ internal class FlowExtensionsTests {
         }
     }
 
-    @Test
     @OptIn(ExperimentalCoroutinesApi::class)
     @Suppress("SpellCheckingInspection")
+    @Test
     fun `GIVEN a Loadable Flow that's Loading WHEN sending its Loadables  into a LoadableScope THEN it loads`() { // ktlint-disable max-line-length
         runTest {
             emptyLoadableFlow(loadableFlow<Serializable?>()::sendTo).test {
@@ -228,9 +228,9 @@ internal class FlowExtensionsTests {
         }
     }
 
-    @Test
     @OptIn(ExperimentalCoroutinesApi::class)
     @Suppress("SpellCheckingInspection")
+    @Test
     fun `GIVEN a Loadable Flow that's Loaded WHEN sending its Loadables into a LoadableScope THEN it loads the content`() { // ktlint-disable max-line-length
         runTest {
             loadableFlow(loadableFlowOf(0)::sendTo).test {
@@ -240,9 +240,9 @@ internal class FlowExtensionsTests {
         }
     }
 
-    @Test
     @OptIn(ExperimentalCoroutinesApi::class)
     @Suppress("SpellCheckingInspection")
+    @Test
     fun `GIVEN a Loadable Flow that's Failed WHEN sending its Loadables into a LoadableScope THEN it fails`() { // ktlint-disable max-line-length
         val error = Throwable()
         runTest {
@@ -257,9 +257,9 @@ internal class FlowExtensionsTests {
         }
     }
 
-    @Test
-    @Suppress("CAST_NEVER_SUCCEEDS")
     @OptIn(ExperimentalCoroutinesApi::class)
+    @Suppress("CAST_NEVER_SUCCEEDS")
+    @Test
     fun `GIVEN a Loadable ChannelFlow WHEN emitting from different scopes THEN it receives sent emissions`() { // ktlint-disable max-line-length
         runTest {
             loadableChannelFlow {
