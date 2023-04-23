@@ -220,7 +220,7 @@ internal class FlowExtensionsTests {
     @OptIn(ExperimentalCoroutinesApi::class)
     @Suppress("SpellCheckingInspection")
     @Test
-    fun `GIVEN a Loadable Flow that's Loading WHEN sending its Loadables  into a LoadableScope THEN it loads`() { // ktlint-disable max-line-length
+    fun `GIVEN a Loadable Flow that's Loading WHEN sending its Loadables into a LoadableScope THEN it loads`() { // ktlint-disable max-line-length
         runTest {
             emptyLoadableFlow(loadableFlow<Serializable?>()::sendTo).test {
                 assertIs<Loadable.Loading<Serializable?>>(awaitItem())
