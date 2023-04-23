@@ -56,10 +56,10 @@ from the server, and also inform whether it's loading or if it has failed:
 ```kotlin
 CoroutineScope(Dispatchers.IO).launch {
     loadableFlow { // this: LoadableScope<Int>
-        // `getNumbersFlow` is a suspending network call that returns Flow<Int>.
+        // getNumbersFlow is a suspending network call that returns Flow<Int>.
         getNumbersFlow()
-        // `loadTo` is a terminal operator that turns `Flow<Int>` into a `Flow<Loadable<Int>>` and
-        // emits all of its Loadables to the outer `loadableFlow`.
+        // loadTo is a terminal operator that turns Flow<Int> into a Flow<Loadable<Int>> and emits
+        // all of its Loadables to the outer loadableFlow.
             .loadTo(this)
     }
         .collect {
