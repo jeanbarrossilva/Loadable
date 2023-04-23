@@ -80,7 +80,7 @@ fun <T : Serializable?> Flow<T>.loadable(): Flow<Loadable<T>> {
  * [loaded][Loadable.Loaded];
  * - [LoadableScope.fail] with the [error][Loadable.Failed.error] when [failed][Loadable.Failed].
  **/
-suspend fun <T : Serializable?> Flow<Loadable<T>>.loadInto(loadableScope: LoadableScope<T>) {
+suspend fun <T : Serializable?> Flow<Loadable<T>>.sendTo(loadableScope: LoadableScope<T>) {
     collect {
         when (it) {
             is Loadable.Loading -> loadableScope.load()

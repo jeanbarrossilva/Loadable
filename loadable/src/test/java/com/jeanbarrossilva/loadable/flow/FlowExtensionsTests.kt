@@ -179,8 +179,8 @@ internal class FlowExtensionsTests {
     }
 
     @Test
-    @Suppress("SpellCheckingInspection")
     @OptIn(ExperimentalCoroutinesApi::class)
+    @Suppress("SpellCheckingInspection")
     fun `GIVEN a Loadable Flow WHEN unwrapping it THEN only Loaded Loadables' contents are emitted`() { // ktlint-disable max-line-length
         runTest {
             loadableFlow {
@@ -219,9 +219,10 @@ internal class FlowExtensionsTests {
 
     @Test
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun `GIVEN a Loadable Flow that's Loading WHEN loading it into a LoadableScope THEN it loads`() { // ktlint-disable max-line-length
+    @Suppress("SpellCheckingInspection")
+    fun `GIVEN a Loadable Flow that's Loading WHEN sending its Loadables  into a LoadableScope THEN it loads`() { // ktlint-disable max-line-length
         runTest {
-            emptyLoadableFlow(loadableFlow<Serializable?>()::loadInto).test {
+            emptyLoadableFlow(loadableFlow<Serializable?>()::sendTo).test {
                 assertIs<Loadable.Loading<Serializable?>>(awaitItem())
             }
         }
@@ -229,9 +230,10 @@ internal class FlowExtensionsTests {
 
     @Test
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun `GIVEN a Loadable Flow that's Loaded WHEN loading it into a LoadableScope THEN it loads the content`() { // ktlint-disable max-line-length
+    @Suppress("SpellCheckingInspection")
+    fun `GIVEN a Loadable Flow that's Loaded WHEN sending its Loadables into a LoadableScope THEN it loads the content`() { // ktlint-disable max-line-length
         runTest {
-            loadableFlow(loadableFlowOf(0)::loadInto).test {
+            loadableFlow(loadableFlowOf(0)::sendTo).test {
                 awaitItem()
                 assertEquals(Loadable.Loaded(0), awaitItem())
             }
@@ -240,11 +242,12 @@ internal class FlowExtensionsTests {
 
     @Test
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun `GIVEN a Loadable Flow that's Failed WHEN loading it into a LoadableScope THEN it fails`() {
+    @Suppress("SpellCheckingInspection")
+    fun `GIVEN a Loadable Flow that's Failed WHEN sending its Loadables into a LoadableScope THEN it fails`() { // ktlint-disable max-line-length
         val error = Throwable()
         runTest {
             loadableFlow {
-                emptyLoadableFlow<Serializable?> { fail(error) }.loadInto(this)
+                emptyLoadableFlow<Serializable?> { fail(error) }.sendTo(this)
             }
                 .test {
                     awaitItem()
