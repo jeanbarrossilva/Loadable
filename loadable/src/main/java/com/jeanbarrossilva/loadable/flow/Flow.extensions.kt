@@ -72,6 +72,19 @@ fun <T : Serializable?> Flow<T>.loadable(): Flow<Loadable<T>> {
 }
 
 /**
+ * Terminal operator that sends [Loadable]s emitted to this [Flow] into the given [loadableScope],
+ * analogue to calling its...
+ *
+ * - [LoadableScope.load] when [loading][Loadable.Loading];
+ * - [LoadableScope.load] with the [content][Loadable.Loaded.content] when
+ * [loaded][Loadable.Loaded];
+ * - [LoadableScope.fail] with the [error][Loadable.Failed.error] when [failed][Loadable.Failed].
+ **/
+suspend fun <T : Serializable?> Flow<Loadable<T>>.sendTo(loadableScope: LoadableScope<T>) {
+    collect(loadableScope::send)
+}
+
+/**
  * Unwraps [Loadable.Loaded] emissions and returns a [Flow] containing only their
  * [content][Loadable.Loaded.content]s.
  **/
