@@ -258,6 +258,18 @@ internal class FlowExtensionsTests {
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `GIVEN a Flow WHEN loading it to the LoadableScope of a public Loadable-Flow-creator function THEN it's initially Loading once`() { // ktlint-disable max-line-length
+        runTest {
+            loadableFlow { flowOf(0).loadTo(this) }.test {
+                assertIs<Loadable.Loading<Int>>(awaitItem())
+                assertEquals(Loadable.Loaded(0), awaitItem())
+                awaitComplete()
+            }
+        }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Suppress("CAST_NEVER_SUCCEEDS")
     @Test
     fun `GIVEN a Loadable ChannelFlow WHEN emitting from different scopes THEN it receives sent emissions`() { // ktlint-disable max-line-length
