@@ -32,5 +32,5 @@ abstract class LoadableScope<T : Serializable?> internal constructor() {
      *
      * @param loadable [Loadable] to be sent.
      **/
-    protected abstract suspend fun send(loadable: Loadable<T>)
+    internal abstract suspend fun send(loadable: Loadable<T>)
 }
