@@ -1,8 +1,6 @@
 package com.jeanbarrossilva.loadable.list
 
 import com.jeanbarrossilva.loadable.Loadable
-import com.jeanbarrossilva.loadable.list.serializable.emptySerializableList
-import com.jeanbarrossilva.loadable.list.serializable.serializableListOf
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs

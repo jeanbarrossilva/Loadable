@@ -1,2 +1,2 @@
 rootProject.name = "Loadable"
-include(":loadable")
+include(":loadable", ":loadable-list")
