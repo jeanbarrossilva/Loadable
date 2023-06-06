@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.loadable.list
+package com.jeanbarrossilva.loadable.list.serializable
 
 /**
  * Creates a [SerializableList] without elements.

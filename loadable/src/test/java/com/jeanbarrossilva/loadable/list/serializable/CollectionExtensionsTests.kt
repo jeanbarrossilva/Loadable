@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.loadable.list
+package com.jeanbarrossilva.loadable.list.serializable
 
 import kotlin.test.Test
 import org.junit.Assert.assertEquals

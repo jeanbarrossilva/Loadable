@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.loadable.list
+package com.jeanbarrossilva.loadable.list.serializable
 
 import java.io.Serializable
 import kotlin.test.Test

@@ -10,8 +10,8 @@ object Versions {
     val java = JavaVersion.VERSION_11
 
     object Loadable {
-        const val CODE = 9
-        const val NAME = "1.4.1"
+        const val CODE = 10
+        const val NAME = "1.5.0"
         const val SDK_COMPILE = 33
         const val SDK_MIN = 21
         const val SDK_TARGET = SDK_COMPILE
