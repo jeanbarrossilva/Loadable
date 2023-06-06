@@ -1,8 +1,6 @@
 package com.jeanbarrossilva.loadable.list
 
 import com.jeanbarrossilva.loadable.Loadable
-import com.jeanbarrossilva.loadable.list.serializable.SerializableList
-import com.jeanbarrossilva.loadable.list.serializable.serialize
 import com.jeanbarrossilva.loadable.map
 import java.io.Serializable
 

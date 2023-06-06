@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.loadable.list.serializable
+package com.jeanbarrossilva.loadable.list
 
 import java.io.Serializable
 
