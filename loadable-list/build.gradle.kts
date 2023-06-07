@@ -11,7 +11,11 @@ java {
 dependencies {
     api(project(":loadable"))
 
+    implementation(Libraries.KOTLINX_COROUTINES_CORE)
+
     testImplementation(Libraries.KOTLIN_TEST)
+    testImplementation(Libraries.KOTLINX_COROUTINES_TEST)
+    testImplementation(Libraries.TURBINE)
 }
 
 publishing {
