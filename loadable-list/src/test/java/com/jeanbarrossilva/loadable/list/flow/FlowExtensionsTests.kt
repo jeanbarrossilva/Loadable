@@ -5,9 +5,9 @@ import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.flow.loadableFlow
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.SerializableList
-import com.jeanbarrossilva.loadable.list.asListLoadable
 import com.jeanbarrossilva.loadable.list.emptySerializableList
 import com.jeanbarrossilva.loadable.list.serializableListOf
+import com.jeanbarrossilva.loadable.list.toListLoadable
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -28,7 +28,7 @@ internal class FlowExtensionsTests {
                 load(serializableListOf(1, 2))
                 fail(Exception())
             }
-                .map(Loadable<SerializableList<Int>>::asListLoadable)
+                .map(Loadable<SerializableList<Int>>::toListLoadable)
                 .filterNotLoading()
                 .test {
                     assertEquals(ListLoadable.Populated(serializableListOf(1)), awaitItem())
@@ -78,7 +78,7 @@ internal class FlowExtensionsTests {
     fun `GIVEN a failed Flow WHEN converting it into a ListLoadable THEN it is failed`() { // ktlint-disable max-line-length
         runTest {
             loadableFlow<SerializableList<Int>> { fail(Exception()) }
-                .map(Loadable<SerializableList<Int>>::asListLoadable)
+                .map(Loadable<SerializableList<Int>>::toListLoadable)
                 .filterNotLoading()
                 .test {
                     assertIs<ListLoadable.Failed<Int>>(awaitItem())
