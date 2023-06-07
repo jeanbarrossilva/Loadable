@@ -40,16 +40,7 @@ inline fun <I : Serializable?, reified O : Serializable?> ListLoadable<I>.mapNot
     return when (this) {
         is ListLoadable.Loading -> ListLoadable.Loading()
         is ListLoadable.Empty -> ListLoadable.Empty()
-        is ListLoadable.Populated -> content.mapNotNull(transform).serialize<O>().asListLoadable()
+        is ListLoadable.Populated -> content.mapNotNull(transform).serialize<O>().toListLoadable()
         is ListLoadable.Failed -> ListLoadable.Failed(error)
-    }
-}
-
-/** Converts this [Loadable] into a [ListLoadable]. **/
-fun <T : Serializable?> Loadable<SerializableList<T>>.asListLoadable(): ListLoadable<T> {
-    return when (this) {
-        is Loadable.Loading -> ListLoadable.Loading()
-        is Loadable.Loaded -> content.asListLoadable()
-        is Loadable.Failed -> ListLoadable.Failed(error)
     }
 }

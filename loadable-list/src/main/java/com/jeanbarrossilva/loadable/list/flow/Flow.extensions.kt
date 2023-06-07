@@ -4,7 +4,7 @@ import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.flow.loadable
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.SerializableList
-import com.jeanbarrossilva.loadable.list.asListLoadable
+import com.jeanbarrossilva.loadable.list.toListLoadable
 import java.io.Serializable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -33,7 +33,7 @@ fun <T : Serializable?> Flow<SerializableList<T>>.listLoadable(
     coroutineScope: CoroutineScope,
     sharingStarted: SharingStarted
 ): StateFlow<ListLoadable<T>> {
-    return loadable().map(Loadable<SerializableList<T>>::asListLoadable).stateIn(
+    return loadable().map(Loadable<SerializableList<T>>::toListLoadable).stateIn(
         coroutineScope,
         sharingStarted,
         initialValue = ListLoadable.Loading()
