@@ -24,7 +24,6 @@ import com.google.accompanist.placeholder.placeholder
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.ifLoaded
 import java.io.Serializable
-import loadable
 
 /** [SemanticsPropertyKey] that indicates whether content is being loaded. **/
 @Suppress("UnusedReceiverParameter")
@@ -310,14 +309,9 @@ private fun shapeFor(textStyle: TextStyle): Shape {
         MaterialTheme.typography.headlineLarge,
         MaterialTheme.typography.headlineMedium,
         MaterialTheme.typography.headlineSmall -> MaterialTheme.shapes.large
-        MaterialTheme.typography.titleLarge,
-        MaterialTheme.typography.titleMedium,
-        MaterialTheme.typography.titleSmall,
-        MaterialTheme.typography.bodyLarge,
-        MaterialTheme.typography.bodyMedium,
-        MaterialTheme.typography.bodySmall,
         MaterialTheme.typography.labelLarge,
-        MaterialTheme.typography.labelMedium -> MaterialTheme.shapes.small
+        MaterialTheme.typography.labelMedium,
+        MaterialTheme.typography.labelSmall -> MaterialTheme.shapes.small
         else -> PlaceholderDefaults.shape
     }
 }
