@@ -1,6 +1,7 @@
-package com.jeanbarrossilva.loadable.placeholder.test
+package com.jeanbarrossilva.placeholder.test
 
 import androidx.compose.ui.semantics.SemanticsProperties
+import com.jeanbarrossilva.loadable.placeholder.test.Loading
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

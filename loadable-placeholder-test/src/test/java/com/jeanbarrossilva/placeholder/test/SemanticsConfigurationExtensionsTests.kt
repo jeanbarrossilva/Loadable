@@ -1,17 +1,14 @@
-package com.jeanbarrossilva.loadable.placeholder.test
+package com.jeanbarrossilva.placeholder.test
 
 import androidx.compose.ui.semantics.SemanticsConfiguration
 import androidx.compose.ui.semantics.SemanticsProperties
-import androidx.compose.ui.test.junit4.createComposeRule
+import com.jeanbarrossilva.loadable.placeholder.test.Loading
+import com.jeanbarrossilva.loadable.placeholder.test.isLoading
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
-import org.junit.Rule
 import org.junit.Test
 
 internal class SemanticsConfigurationExtensionsTests {
-    @get:Rule
-    val composeRule = createComposeRule()
-
     @Test
     fun isNotLoadingWhenPropertyIsNotSet() {
         val configuration = SemanticsConfiguration()
