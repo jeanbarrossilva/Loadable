@@ -53,7 +53,7 @@ fun <T : Serializable?> Placeholder(
     color: Color = PlaceholderDefaults.color,
     content: @Composable T.() -> Unit
 ) {
-    Placeholder(isVisible = loadable is Loadable.Loading, shape, color, modifier) {
+    Placeholder(modifier, isVisible = loadable is Loadable.Loading, shape, color) {
         loadable.ifLoaded {
             content()
         }
@@ -64,16 +64,26 @@ fun <T : Serializable?> Placeholder(
  * Holds place for loading content.
  *
  * @param modifier [Modifier] to be applied to the underlying [Box].
+ * @param isVisible Whether the placeholder is visible (instead of the [content]).
  * @param shape [Shape] by which the [Placeholder] is clipped.
  * @param color [Color] by which the [Placeholder] is colored.
+ * @param content Content that's shown if [isVisible] is `false`.
  **/
 @Composable
 fun Placeholder(
     modifier: Modifier = Modifier,
+    isVisible: Boolean = true,
     shape: Shape = PlaceholderDefaults.shape,
-    color: Color = PlaceholderDefaults.color
+    color: Color = PlaceholderDefaults.color,
+    content: @Composable () -> Unit = { }
 ) {
-    Placeholder(isVisible = true, shape, color, modifier)
+    Box(
+        modifier
+            .placeholder(isVisible, color, shape, PlaceholderHighlight.shimmer())
+            .semantics { set(SemanticsProperties.Loading, isVisible) }
+    ) {
+        content()
+    }
 }
 
 /**
@@ -280,12 +290,12 @@ private fun TextualPlaceholder(
     }
 
     Placeholder(
-        isVisible,
-        shapeFor(style),
-        color,
         modifier
             .requiredHeight(height)
             .fillMaxWidth(fraction),
+        isVisible,
+        shapeFor(style),
+        color,
         content
     )
 }
@@ -308,32 +318,6 @@ private fun shapeFor(textStyle: TextStyle): Shape {
         MaterialTheme.typography.labelMedium,
         MaterialTheme.typography.labelSmall -> MaterialTheme.shapes.small
         else -> PlaceholderDefaults.shape
-    }
-}
-
-/**
- * Holds place for loading content.
- *
- * @param isVisible Whether the placeholder is visible (instead of the [content]).
- * @param modifier [Modifier] to be applied to the underlying [Box].
- * @param shape [Shape] by which the [Placeholder] is clipped.
- * @param color [Color] by which the [Placeholder] is colored.
- * @param content Content that's shown if [isVisible] is `false`.
- **/
-@Composable
-private fun Placeholder(
-    isVisible: Boolean,
-    shape: Shape,
-    color: Color,
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit = { }
-) {
-    Box(
-        modifier
-            .placeholder(isVisible, color, shape, PlaceholderHighlight.shimmer())
-            .semantics { set(SemanticsProperties.Loading, isVisible) }
-    ) {
-        content()
     }
 }
 
