@@ -3,6 +3,7 @@ import org.gradle.api.JavaVersion
 object Versions {
     const val ACCOMPANIST = "0.31.3-beta"
     const val COMPOSE_COMPILER = "1.4.7"
+    const val COMPOSE_FOUNDATION = "1.4.3"
     const val COMPOSE_MATERIAL_3 = "1.1.0"
     const val COMPOSE_UI = "1.4.3"
     const val GRADLE = "7.4.1"

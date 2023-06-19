@@ -13,7 +13,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.SemanticsProperties
-import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,12 +22,8 @@ import com.google.accompanist.placeholder.material.shimmer
 import com.google.accompanist.placeholder.placeholder
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.ifLoaded
+import com.jeanbarrossilva.loadable.placeholder.test.Loading
 import java.io.Serializable
-
-/** [SemanticsPropertyKey] that indicates whether content is being loaded. **/
-@Suppress("UnusedReceiverParameter")
-val SemanticsProperties.Loading
-    get() = SemanticsPropertyKey<Boolean>("Loading")
 
 /** Default values of a [Placeholder]. **/
 object PlaceholderDefaults {

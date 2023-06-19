@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = Metadata.namespace("placeholder")
+    namespace = Metadata.namespace("placeholder.test")
     compileSdk = 33
 
     defaultConfig {
@@ -42,15 +42,9 @@ android {
 }
 
 dependencies {
-    api(project(":loadable"))
-
-    implementation(project(":loadable-placeholder-test"))
-    implementation(Libraries.ACCOMPANIST_PLACEHOLDER_MATERIAL)
-    implementation(Libraries.COMPOSE_MATERIAL_3)
-    implementation(Libraries.COMPOSE_UI_TOOLING)
-
-    androidTestImplementation(Libraries.COMPOSE_UI_TEST_JUNIT_4)
-    androidTestImplementation(Libraries.COMPOSE_UI_TEST_MANIFEST)
+    implementation(Libraries.COMPOSE_FOUNDATION)
+    implementation(Libraries.COMPOSE_UI_TEST_JUNIT_4)
+    implementation(Libraries.COMPOSE_UI_TEST_MANIFEST)
 }
 
 publishing {
@@ -61,7 +55,7 @@ publishing {
     publications {
         register<MavenPublication>(Variants.RELEASE) {
             groupId = Metadata.GROUP
-            artifactId = Metadata.artifact("placeholder")
+            artifactId = Metadata.artifact("placeholder-test")
             version = Versions.Loadable.NAME
 
             afterEvaluate {
