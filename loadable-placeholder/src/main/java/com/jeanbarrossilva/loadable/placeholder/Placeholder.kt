@@ -24,6 +24,7 @@ import com.google.accompanist.placeholder.placeholder
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.ifLoaded
 import java.io.Serializable
+import loadable
 
 /** [SemanticsPropertyKey] that indicates whether content is being loaded. **/
 @Suppress("UnusedReceiverParameter")
@@ -205,9 +206,9 @@ fun SmallTextualPlaceholder(
  * Holds place for large, loading [Text].
  *
  * @param isVisible Whether the placeholder is visible (instead of the [content]).
- * @param modifier [Modifier] to be applied to the underlying [Placeholder].
  * @param style [TextStyle] for determining the height.
  * @param color [Color] by which the [TextualPlaceholder] is colored.
+ * @param modifier [Modifier] to be applied to the underlying [Placeholder].
  * @param content [Text] that's shown if the [loadable] is [loaded][Loadable.Loaded].
  **/
 @Composable
@@ -225,9 +226,9 @@ private fun LargeTextualPlaceholder(
  * Holds place for medium, loading [Text].
  *
  * @param isVisible Whether the placeholder is visible (instead of the [content]).
- * @param modifier [Modifier] to be applied to the underlying [Placeholder].
  * @param style [TextStyle] for determining the height.
  * @param color [Color] by which the [TextualPlaceholder] is colored.
+ * @param modifier [Modifier] to be applied to the underlying [Placeholder].
  * @param content [Text] that's shown if the [loadable] is [loaded][Loadable.Loaded].
  **/
 @Composable
@@ -245,9 +246,9 @@ private fun MediumTextualPlaceholder(
  * Holds place for small, loading [Text].
  *
  * @param isVisible Whether the placeholder is visible (instead of the [content]).
- * @param modifier [Modifier] to be applied to the underlying [Placeholder].
  * @param style [TextStyle] for determining the height.
  * @param color [Color] by which the [TextualPlaceholder] is colored.
+ * @param modifier [Modifier] to be applied to the underlying [Placeholder].
  * @param content [Text] that's shown if the [loadable] is [loaded][Loadable.Loaded].
  **/
 @Composable
@@ -266,9 +267,9 @@ private fun SmallTextualPlaceholder(
  *
  * @param isVisible Whether the placeholder is visible (instead of the [content]).
  * @param fraction Available-width-based fraction.
- * @param modifier [Modifier] to be applied to the underlying [Placeholder].
  * @param style [TextStyle] for determining the height.
  * @param color [Color] by which the [TextualPlaceholder] is colored.
+ * @param modifier [Modifier] to be applied to the underlying [Placeholder].
  * @param content [Text] that's shown if [isVisible] is `false`.
  **/
 @Composable
