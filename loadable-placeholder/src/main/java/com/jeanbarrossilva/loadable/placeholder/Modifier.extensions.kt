@@ -9,7 +9,6 @@ import androidx.compose.ui.Modifier
  * @param condition Determines whether the result of [transform] will get returned.
  * @param transform Transformation to be made to this [Modifier].
  **/
-internal fun Modifier.`if`(condition: Boolean, transform: Modifier.() -> Modifier):
-    Modifier {
+internal fun Modifier.`if`(condition: Boolean, transform: Modifier.() -> Modifier): Modifier {
     return if (condition) transform() else this
 }
