@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -299,9 +300,10 @@ private fun TextualPlaceholder(
             .`if`(isVisible) { fillMaxWidth(fraction) },
         isVisible,
         shapeFor(style),
-        color,
-        content
-    )
+        color
+    ) {
+        ProvideTextStyle(style, content)
+    }
 }
 
 /**
