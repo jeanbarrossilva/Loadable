@@ -291,8 +291,8 @@ private fun TextualPlaceholder(
 
     Placeholder(
         modifier
-            .requiredHeight(height)
-            .fillMaxWidth(fraction),
+            .`if`(isVisible) { requiredHeight(height) }
+            .`if`(isVisible) { fillMaxWidth(fraction) },
         isVisible,
         shapeFor(style),
         color,
