@@ -25,7 +25,6 @@ import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.ifLoaded
 import com.jeanbarrossilva.loadable.placeholder.test.Loading
 import java.io.Serializable
-import loadable
 
 /** Default values of a [Placeholder]. **/
 object PlaceholderDefaults {
