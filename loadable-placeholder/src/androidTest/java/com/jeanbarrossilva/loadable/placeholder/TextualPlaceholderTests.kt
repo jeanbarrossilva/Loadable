@@ -1,5 +1,7 @@
 package com.jeanbarrossilva.loadable.placeholder
 
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertHeightIsAtLeast
@@ -12,6 +14,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.placeholder.test.onPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.test.tagAsPlaceholder
+import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 
@@ -50,5 +53,17 @@ internal class TextualPlaceholderTests {
             }
         }
         composeRule.onPlaceholder().assertHeightIsAtLeast(24.dp)
+    }
+
+    @Test
+    fun passedTextStyleIsSetAsTheLocalOne() {
+        composeRule.setContent {
+            MediumTextualPlaceholder(
+                Loadable.Loaded("🤌🏽"),
+                style = MaterialTheme.typography.headlineLarge
+            ) {
+                assertEquals(MaterialTheme.typography.headlineLarge, LocalTextStyle.current)
+            }
+        }
     }
 }
