@@ -2,6 +2,7 @@ package com.jeanbarrossilva.loadable.placeholder
 
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.test.assertHeightIsAtLeast
 import androidx.compose.ui.test.assertWidthIsEqualTo
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.text.TextStyle
@@ -33,5 +34,21 @@ internal class TextualPlaceholderTests {
             }
         }
         composeRule.onPlaceholder().assertWidthIsEqualTo(screenWidth)
+    }
+
+    @Test
+    fun heightIsNotConstrainedIfItIsLoaded() {
+        val displayMetrics =
+            InstrumentationRegistry.getInstrumentation().context.resources.displayMetrics
+        composeRule.setContent {
+            MediumTextualPlaceholder(
+                Loadable.Loaded("🙃".repeat(displayMetrics.heightPixels)),
+                Modifier.tagAsPlaceholder(),
+                TextStyle(fontSize = 14.sp)
+            ) {
+                Text(this)
+            }
+        }
+        composeRule.onPlaceholder().assertHeightIsAtLeast(24.dp)
     }
 }
