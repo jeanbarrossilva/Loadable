@@ -8,6 +8,7 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -285,14 +286,17 @@ private fun TextualPlaceholder(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit = { }
 ) {
-    val height = with(LocalDensity.current) {
-        style.fontSize.toDp()
+    val density = LocalDensity.current
+    val height = remember(style, density) {
+        with(density) {
+            style.fontSize.toDp()
+        }
     }
 
     Placeholder(
         modifier
-            .requiredHeight(height)
-            .fillMaxWidth(fraction),
+            .`if`(isVisible) { requiredHeight(height) }
+            .`if`(isVisible) { fillMaxWidth(fraction) },
         isVisible,
         shapeFor(style),
         color,
