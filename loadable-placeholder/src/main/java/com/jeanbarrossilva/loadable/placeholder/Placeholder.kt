@@ -1,6 +1,7 @@
 package com.jeanbarrossilva.loadable.placeholder
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
@@ -77,7 +78,7 @@ fun Placeholder(
     isLoading: Boolean = true,
     shape: Shape = PlaceholderDefaults.shape,
     color: Color = PlaceholderDefaults.color,
-    content: @Composable () -> Unit = { }
+    content: @Composable BoxScope.() -> Unit = { }
 ) {
     Box(
         modifier
