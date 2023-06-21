@@ -3,6 +3,7 @@ package com.jeanbarrossilva.loadable.placeholder
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertHeightIsAtLeast
 import androidx.compose.ui.test.assertWidthIsEqualTo
@@ -33,7 +34,7 @@ internal class TextualPlaceholderTests {
                 Modifier.tagAsPlaceholder(),
                 TextStyle(fontSize = 14.sp)
             ) {
-                Text(this)
+                Text(it)
             }
         }
         composeRule.onPlaceholder().assertWidthIsEqualTo(screenWidth)
@@ -41,15 +42,19 @@ internal class TextualPlaceholderTests {
 
     @Test
     fun heightIsNotConstrainedIfItIsLoaded() {
-        val displayMetrics =
-            InstrumentationRegistry.getInstrumentation().context.resources.displayMetrics
+        val screenHeightInPx = InstrumentationRegistry
+            .getInstrumentation()
+            .context
+            .resources
+            .displayMetrics
+            .heightPixels
         composeRule.setContent {
             MediumTextualPlaceholder(
-                Loadable.Loaded("🙃".repeat(displayMetrics.heightPixels)),
+                Loadable.Loaded("🙃".repeat(screenHeightInPx)),
                 Modifier.tagAsPlaceholder(),
                 TextStyle(fontSize = 14.sp)
             ) {
-                Text(this)
+                Text(it)
             }
         }
         composeRule.onPlaceholder().assertHeightIsAtLeast(24.dp)
@@ -62,7 +67,13 @@ internal class TextualPlaceholderTests {
                 Loadable.Loaded("🤌🏽"),
                 style = MaterialTheme.typography.headlineLarge
             ) {
-                assertEquals(MaterialTheme.typography.headlineLarge, LocalTextStyle.current)
+                val expected = MaterialTheme.typography.headlineLarge
+                val actual = LocalTextStyle.current
+
+                DisposableEffect(Unit) {
+                    assertEquals(expected, actual)
+                    onDispose { }
+                }
             }
         }
     }

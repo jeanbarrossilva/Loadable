@@ -1,6 +1,7 @@
 package com.jeanbarrossilva.loadable.placeholder
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
@@ -53,11 +54,11 @@ fun <T : Serializable?> Placeholder(
     modifier: Modifier = Modifier,
     shape: Shape = PlaceholderDefaults.shape,
     color: Color = PlaceholderDefaults.color,
-    content: @Composable T.() -> Unit
+    content: @Composable BoxScope.(T) -> Unit
 ) {
     Placeholder(modifier, isLoading = loadable is Loadable.Loading, shape, color) {
         loadable.ifLoaded {
-            content()
+            content(this)
         }
     }
 }
@@ -77,15 +78,14 @@ fun Placeholder(
     isLoading: Boolean = true,
     shape: Shape = PlaceholderDefaults.shape,
     color: Color = PlaceholderDefaults.color,
-    content: @Composable () -> Unit = { }
+    content: @Composable BoxScope.() -> Unit = { }
 ) {
     Box(
         modifier
             .placeholder(isLoading, color, shape, PlaceholderHighlight.shimmer())
-            .semantics { set(SemanticsProperties.Loading, isLoading) }
-    ) {
-        content()
-    }
+            .semantics { set(SemanticsProperties.Loading, isLoading) },
+        content = content
+    )
 }
 
 /**
@@ -119,11 +119,11 @@ fun LargeTextualPlaceholder(
     modifier: Modifier = Modifier,
     style: TextStyle = LocalTextStyle.current,
     color: Color = PlaceholderDefaults.color,
-    content: @Composable String.() -> Unit
+    content: @Composable (text: String) -> Unit
 ) {
     LargeTextualPlaceholder(isLoading = loadable is Loadable.Loading, style, color, modifier) {
         loadable.ifLoaded {
-            content()
+            content(this)
         }
     }
 }
@@ -143,11 +143,11 @@ fun MediumTextualPlaceholder(
     modifier: Modifier = Modifier,
     style: TextStyle = LocalTextStyle.current,
     color: Color = PlaceholderDefaults.color,
-    content: @Composable String.() -> Unit
+    content: @Composable (text: String) -> Unit
 ) {
     MediumTextualPlaceholder(isLoading = loadable is Loadable.Loading, style, color, modifier) {
         loadable.ifLoaded {
-            content()
+            content(this)
         }
     }
 }
@@ -183,11 +183,11 @@ fun SmallTextualPlaceholder(
     modifier: Modifier = Modifier,
     style: TextStyle = LocalTextStyle.current,
     color: Color = PlaceholderDefaults.color,
-    content: @Composable String.() -> Unit
+    content: @Composable (text: String) -> Unit
 ) {
     SmallTextualPlaceholder(isLoading = loadable is Loadable.Loading, style, color, modifier) {
         loadable.ifLoaded {
-            content()
+            content(this)
         }
     }
 }

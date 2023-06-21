@@ -15,7 +15,7 @@ internal class PlaceholderTests {
     val composeRule = createComposeRule()
 
     @Test
-    fun isLoadingWhenVisible() {
+    fun isLoadingWhenIsLoadingIsSetToTrue() {
         composeRule.setContent { Placeholder(Modifier.tagAsPlaceholder()) }
         composeRule.onPlaceholder().assertIsLoading()
     }
