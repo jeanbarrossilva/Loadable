@@ -55,7 +55,7 @@ fun <T : Serializable?> Placeholder(
     color: Color = PlaceholderDefaults.color,
     content: @Composable T.() -> Unit
 ) {
-    Placeholder(modifier, isVisible = loadable is Loadable.Loading, shape, color) {
+    Placeholder(modifier, isLoading = loadable is Loadable.Loading, shape, color) {
         loadable.ifLoaded {
             content()
         }
@@ -66,23 +66,23 @@ fun <T : Serializable?> Placeholder(
  * Holds place for loading content.
  *
  * @param modifier [Modifier] to be applied to the underlying [Box].
- * @param isVisible Whether the placeholder is visible (instead of the [content]).
+ * @param isLoading Whether the placeholder is visible (instead of the [content]).
  * @param shape [Shape] by which the [Placeholder] is clipped.
  * @param color [Color] by which the [Placeholder] is colored.
- * @param content Content that's shown if [isVisible] is `false`.
+ * @param content Content that's shown if [isLoading] is `false`.
  **/
 @Composable
 fun Placeholder(
     modifier: Modifier = Modifier,
-    isVisible: Boolean = true,
+    isLoading: Boolean = true,
     shape: Shape = PlaceholderDefaults.shape,
     color: Color = PlaceholderDefaults.color,
     content: @Composable () -> Unit = { }
 ) {
     Box(
         modifier
-            .placeholder(isVisible, color, shape, PlaceholderHighlight.shimmer())
-            .semantics { set(SemanticsProperties.Loading, isVisible) }
+            .placeholder(isLoading, color, shape, PlaceholderHighlight.shimmer())
+            .semantics { set(SemanticsProperties.Loading, isLoading) }
     ) {
         content()
     }
@@ -101,7 +101,7 @@ fun LargeTextualPlaceholder(
     style: TextStyle = LocalTextStyle.current,
     color: Color = PlaceholderDefaults.color
 ) {
-    LargeTextualPlaceholder(isVisible = true, style, color, modifier)
+    LargeTextualPlaceholder(isLoading = true, style, color, modifier)
 }
 
 /**
@@ -121,7 +121,7 @@ fun LargeTextualPlaceholder(
     color: Color = PlaceholderDefaults.color,
     content: @Composable String.() -> Unit
 ) {
-    LargeTextualPlaceholder(isVisible = loadable is Loadable.Loading, style, color, modifier) {
+    LargeTextualPlaceholder(isLoading = loadable is Loadable.Loading, style, color, modifier) {
         loadable.ifLoaded {
             content()
         }
@@ -145,7 +145,7 @@ fun MediumTextualPlaceholder(
     color: Color = PlaceholderDefaults.color,
     content: @Composable String.() -> Unit
 ) {
-    MediumTextualPlaceholder(isVisible = loadable is Loadable.Loading, style, color, modifier) {
+    MediumTextualPlaceholder(isLoading = loadable is Loadable.Loading, style, color, modifier) {
         loadable.ifLoaded {
             content()
         }
@@ -165,7 +165,7 @@ fun MediumTextualPlaceholder(
     style: TextStyle = LocalTextStyle.current,
     color: Color = PlaceholderDefaults.color
 ) {
-    MediumTextualPlaceholder(isVisible = true, style, color, modifier)
+    MediumTextualPlaceholder(isLoading = true, style, color, modifier)
 }
 
 /**
@@ -185,7 +185,7 @@ fun SmallTextualPlaceholder(
     color: Color = PlaceholderDefaults.color,
     content: @Composable String.() -> Unit
 ) {
-    SmallTextualPlaceholder(isVisible = loadable is Loadable.Loading, style, color, modifier) {
+    SmallTextualPlaceholder(isLoading = loadable is Loadable.Loading, style, color, modifier) {
         loadable.ifLoaded {
             content()
         }
@@ -205,13 +205,13 @@ fun SmallTextualPlaceholder(
     style: TextStyle = LocalTextStyle.current,
     color: Color = PlaceholderDefaults.color
 ) {
-    SmallTextualPlaceholder(isVisible = true, style, color, modifier)
+    SmallTextualPlaceholder(isLoading = true, style, color, modifier)
 }
 
 /**
  * Holds place for large, loading [Text].
  *
- * @param isVisible Whether the placeholder is visible (instead of the [content]).
+ * @param isLoading Whether the placeholder is visible (instead of the [content]).
  * @param style [TextStyle] for determining the height.
  * @param color [Color] by which the [TextualPlaceholder] is colored.
  * @param modifier [Modifier] to be applied to the underlying [Placeholder].
@@ -219,19 +219,19 @@ fun SmallTextualPlaceholder(
  **/
 @Composable
 private fun LargeTextualPlaceholder(
-    isVisible: Boolean,
+    isLoading: Boolean,
     style: TextStyle,
     color: Color,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit = { }
 ) {
-    TextualPlaceholder(isVisible, fraction = 1f, style, color, modifier, content)
+    TextualPlaceholder(isLoading, fraction = 1f, style, color, modifier, content)
 }
 
 /**
  * Holds place for medium, loading [Text].
  *
- * @param isVisible Whether the placeholder is visible (instead of the [content]).
+ * @param isLoading Whether the placeholder is visible (instead of the [content]).
  * @param style [TextStyle] for determining the height.
  * @param color [Color] by which the [TextualPlaceholder] is colored.
  * @param modifier [Modifier] to be applied to the underlying [Placeholder].
@@ -239,19 +239,19 @@ private fun LargeTextualPlaceholder(
  **/
 @Composable
 private fun MediumTextualPlaceholder(
-    isVisible: Boolean,
+    isLoading: Boolean,
     style: TextStyle,
     color: Color,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit = { }
 ) {
-    TextualPlaceholder(isVisible, fraction = .5f, style, color, modifier, content)
+    TextualPlaceholder(isLoading, fraction = .5f, style, color, modifier, content)
 }
 
 /**
  * Holds place for small, loading [Text].
  *
- * @param isVisible Whether the placeholder is visible (instead of the [content]).
+ * @param isLoading Whether the placeholder is visible (instead of the [content]).
  * @param style [TextStyle] for determining the height.
  * @param color [Color] by which the [TextualPlaceholder] is colored.
  * @param modifier [Modifier] to be applied to the underlying [Placeholder].
@@ -259,28 +259,28 @@ private fun MediumTextualPlaceholder(
  **/
 @Composable
 private fun SmallTextualPlaceholder(
-    isVisible: Boolean,
+    isLoading: Boolean,
     style: TextStyle,
     color: Color,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit = { }
 ) {
-    TextualPlaceholder(isVisible, fraction = .2f, style, color, modifier, content)
+    TextualPlaceholder(isLoading, fraction = .2f, style, color, modifier, content)
 }
 
 /**
  * Holds place for loading [Text].
  *
- * @param isVisible Whether the placeholder is visible (instead of the [content]).
+ * @param isLoading Whether the placeholder is visible (instead of the [content]).
  * @param fraction Available-width-based fraction.
  * @param style [TextStyle] for determining the height.
  * @param color [Color] by which the [TextualPlaceholder] is colored.
  * @param modifier [Modifier] to be applied to the underlying [Placeholder].
- * @param content [Text] that's shown if [isVisible] is `false`.
+ * @param content [Text] that's shown if [isLoading] is `false`.
  **/
 @Composable
 private fun TextualPlaceholder(
-    isVisible: Boolean,
+    isLoading: Boolean,
     fraction: Float,
     style: TextStyle,
     color: Color,
@@ -296,9 +296,9 @@ private fun TextualPlaceholder(
 
     Placeholder(
         modifier
-            .`if`(isVisible) { requiredHeight(height) }
-            .`if`(isVisible) { fillMaxWidth(fraction) },
-        isVisible,
+            .`if`(isLoading) { requiredHeight(height) }
+            .`if`(isLoading) { fillMaxWidth(fraction) },
+        isLoading,
         shapeFor(style),
         color
     ) {
