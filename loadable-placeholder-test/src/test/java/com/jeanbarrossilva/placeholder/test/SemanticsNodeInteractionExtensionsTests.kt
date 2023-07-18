@@ -1,13 +1,21 @@
-package com.jeanbarrossilva.loadable.placeholder.test
+package com.jeanbarrossilva.placeholder.test
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.test.junit4.createComposeRule
+import com.jeanbarrossilva.loadable.placeholder.test.Loading
+import com.jeanbarrossilva.loadable.placeholder.test.assertIsLoading
+import com.jeanbarrossilva.loadable.placeholder.test.assertIsNotLoading
+import com.jeanbarrossilva.loadable.placeholder.test.onPlaceholder
+import com.jeanbarrossilva.loadable.placeholder.test.tagAsPlaceholder
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class SemanticsNodeInteractionExtensionsTests {
     @get:Rule
     val composeRule = createComposeRule()
