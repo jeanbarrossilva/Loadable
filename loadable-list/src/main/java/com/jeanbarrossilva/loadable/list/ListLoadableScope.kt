@@ -14,10 +14,10 @@ abstract class ListLoadableScope<T : Serializable?> internal constructor() {
      *
      * @param content [Array] to be converted into a [SerializableList] and sent either as a
      * [ListLoadable.Empty] or a [ListLoadable.Populated].
-     * @see Array.serialize
+     * @see Array.toSerializableList
      **/
     suspend fun load(vararg content: T) {
-        load(content.serialize())
+        load(content.toSerializableList())
     }
 
     /**

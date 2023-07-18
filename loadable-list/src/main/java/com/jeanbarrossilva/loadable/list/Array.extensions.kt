@@ -1,6 +1,6 @@
 package com.jeanbarrossilva.loadable.list
 
 /** Converts this [Array] into a [SerializableList]. **/
-fun <T> Array<out T>.serialize(): SerializableList<T> {
+fun <T> Array<out T>.toSerializableList(): SerializableList<T> {
     return serializableListOf(*this)
 }
