@@ -8,7 +8,7 @@ object Versions {
     const val COMPOSE_UI = "1.4.3"
     const val GRADLE = "7.4.1"
     const val KOTLIN = "1.8.21"
-    const val KOTLINX_COROUTINES = "1.6.4"
+    const val KOTLINX_COROUTINES = "1.7.2"
     const val ROBOLECTRIC = "4.9"
     const val TEST_RUNNER = "1.5.2"
     const val TURBINE = "0.12.1"
