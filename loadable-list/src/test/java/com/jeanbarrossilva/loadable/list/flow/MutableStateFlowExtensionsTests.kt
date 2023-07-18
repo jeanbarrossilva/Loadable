@@ -32,7 +32,7 @@ internal class MutableStateFlowExtensionsTests {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `GIVEN some content WHEN creating a ListLoadable StateFlow with it THEN it emits Loading followed by the matching ListLoadable`() {
+    fun `GIVEN some content WHEN creating a ListLoadable StateFlow with it THEN it emits Loading followed by the matching ListLoadable`() { // ktlint-disable max-line-length
         runTest {
             listLoadableFlow(this) { load(1, 2, 3) }.test {
                 assertIs<ListLoadable.Loading<Int>>(awaitItem())
