@@ -1,18 +1,12 @@
 package com.jeanbarrossilva.loadable.list.flow
 
-import com.jeanbarrossilva.loadable.Loadable
-import com.jeanbarrossilva.loadable.flow.loadable
 import com.jeanbarrossilva.loadable.list.ListLoadable
-import com.jeanbarrossilva.loadable.list.SerializableList
-import com.jeanbarrossilva.loadable.list.toListLoadable
+import com.jeanbarrossilva.loadable.list.ListLoadableScope
 import java.io.Serializable
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filterNot
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.flow
 
 /** Returns a [Flow] containing only non-[loading][ListLoadable.Loading] values. **/
 fun <T : Serializable?> Flow<ListLoadable<T>>.filterNotLoading(): Flow<ListLoadable<T>> {
@@ -22,20 +16,34 @@ fun <T : Serializable?> Flow<ListLoadable<T>>.filterNotLoading(): Flow<ListLoada
 }
 
 /**
- * Maps each emission to a [ListLoadable] and emits an initial [loading][ListLoadable.Loading]
- * value.
+ * Creates a [Flow] of [ListLoadable]s that are emitted through [load] with a [ListLoadableScope]
+ * and has an initial [loading][ListLoadable.Loading] value.
  *
- * @param coroutineScope [CoroutineScope] in which the [StateFlow] will be started and its
- * [value][StateFlow.value] will be shared.
- * @param sharingStarted Strategy for controlling when sharing starts and ends.
+ * @param load Operations to be made on the [ListLoadableScope] responsible for emitting
+ * [ListLoadable]s sent to it to the created [Flow].
  **/
-fun <T : Serializable?> Flow<SerializableList<T>>.listLoadable(
-    coroutineScope: CoroutineScope,
-    sharingStarted: SharingStarted
-): StateFlow<ListLoadable<T>> {
-    return loadable().map(Loadable<SerializableList<T>>::toListLoadable).stateIn(
-        coroutineScope,
-        sharingStarted,
-        initialValue = ListLoadable.Loading()
-    )
+fun <T : Serializable?> listLoadableFlow(load: suspend ListLoadableScope<T>.() -> Unit):
+    Flow<ListLoadable<T>> {
+    return emptyListLoadableFlow {
+        load()
+        load.invoke(this)
+    }
+}
+
+/**
+ * Creates a [Flow] of [ListLoadable]s that are emitted through [load] with a [ListLoadableScope].
+ * Doesn't have any initial value (hence its emptiness).
+ *
+ * @param load Operations to be made on the [ListLoadableScope] responsible for emitting
+ * [ListLoadable]s sent to it to the created [Flow].
+ **/
+internal fun <T : Serializable?> emptyListLoadableFlow(
+    load: suspend ListLoadableScope<T>.() -> Unit
+): Flow<ListLoadable<T>> {
+    return flow<ListLoadable<T>> {
+        FlowCollectorListLoadableScope(this).apply {
+            load.invoke(this)
+        }
+    }
+        .catch { emit(ListLoadable.Failed(it)) }
 }

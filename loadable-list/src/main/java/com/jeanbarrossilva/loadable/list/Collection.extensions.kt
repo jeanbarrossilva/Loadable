@@ -1,12 +1,6 @@
 package com.jeanbarrossilva.loadable.list
 
-import java.io.Serializable
-
-/**
- * Serializes the given [Collection] by converting it into a [SerializableList].
- *
- * @see Serializable
- **/
+/** Converts this [Collection] it into a [SerializableList]. **/
 inline fun <reified T> Collection<T>.serialize(): SerializableList<T> {
-    return serializableListOf(*toTypedArray())
+    return toTypedArray().serialize()
 }
