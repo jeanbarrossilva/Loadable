@@ -38,9 +38,13 @@ inline fun <I : Serializable?, reified O : Serializable?> ListLoadable<I>.mapNot
     transform: (I) -> O?
 ): ListLoadable<O> {
     return when (this) {
-        is ListLoadable.Loading -> ListLoadable.Loading()
-        is ListLoadable.Empty -> ListLoadable.Empty()
-        is ListLoadable.Populated -> content.mapNotNull(transform).serialize<O>().toListLoadable()
-        is ListLoadable.Failed -> ListLoadable.Failed(error)
+        is ListLoadable.Loading ->
+            ListLoadable.Loading()
+        is ListLoadable.Empty ->
+            ListLoadable.Empty()
+        is ListLoadable.Populated ->
+            content.mapNotNull(transform).toSerializableList<O>().toListLoadable()
+        is ListLoadable.Failed ->
+            ListLoadable.Failed(error)
     }
 }
