@@ -10,7 +10,6 @@ android {
 
     defaultConfig {
         minSdk = 24
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
@@ -33,6 +32,13 @@ android {
         compose = true
     }
 
+    @Suppress("UnstableApiUsage")
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
+
     compileOptions {
         sourceCompatibility = Versions.java
         targetCompatibility = Versions.java
@@ -52,6 +58,8 @@ dependencies {
     implementation(Libraries.COMPOSE_FOUNDATION)
     implementation(Libraries.COMPOSE_UI_TEST_JUNIT_4)
     implementation(Libraries.COMPOSE_UI_TEST_MANIFEST)
+
+    testImplementation(Libraries.ROBOLECTRIC)
 }
 
 publishing {
