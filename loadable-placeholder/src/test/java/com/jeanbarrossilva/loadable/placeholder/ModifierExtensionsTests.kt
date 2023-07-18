@@ -10,7 +10,10 @@ import com.jeanbarrossilva.loadable.placeholder.test.onPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.test.tagAsPlaceholder
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class ModifierExtensionsTests {
     @get:Rule
     val composeRule = createComposeRule()
