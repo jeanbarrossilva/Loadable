@@ -20,6 +20,18 @@ import kotlinx.coroutines.test.runTest
 internal class FlowExtensionsTests {
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
+    fun `GIVEN some content WHEN creating ListLoadable Flow with it THEN it emits Loading followed by the matching ListLoadable`() { // ktlint-disable max-line-length
+        runTest {
+            listLoadableFlow { load(1, 2, 3) }.test {
+                assertIs<ListLoadable.Loading<Int>>(awaitItem())
+                assertEquals(ListLoadable.Populated(serializableListOf(1, 2, 3)), awaitItem())
+                awaitComplete()
+            }
+        }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
     fun `GIVEN a ListLoadable Flow WHEN filtering by non-loading values THEN it's filtered`() {
         runTest {
             loadableFlow {
