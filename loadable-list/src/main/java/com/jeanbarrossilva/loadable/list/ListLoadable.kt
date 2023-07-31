@@ -8,8 +8,13 @@ import java.io.Serializable
  * [SerializableList], as well as its "population" state.
  **/
 sealed interface ListLoadable<T : Serializable?> {
+    /** Whether this [ListLoadable] has been successfully loaded. **/
+    val isLoaded: Boolean
+
     /** Stage in which the [SerializableList] is loading. **/
     class Loading<T : Serializable?> : ListLoadable<T> {
+        override val isLoaded = false
+
         override fun toLoadable(): Loadable<SerializableList<T>> {
             return Loadable.Loading()
         }
@@ -17,6 +22,8 @@ sealed interface ListLoadable<T : Serializable?> {
 
     /** Stage in which the [SerializableList] has been loaded but it's empty. **/
     class Empty<T : Serializable?> : ListLoadable<T> {
+        override val isLoaded = true
+
         override fun toLoadable(): Loadable<SerializableList<T>> {
             val content = emptySerializableList<T>()
             return Loadable.Loaded(content)
@@ -31,6 +38,9 @@ sealed interface ListLoadable<T : Serializable?> {
      */
     @JvmInline
     value class Populated<T : Serializable?>(val content: SerializableList<T>) : ListLoadable<T> {
+        override val isLoaded
+            get() = true
+
         init {
             require(content.isNotEmpty()) {
                 "Cannot create a populated ListLoadable with an empty SerializableList."
@@ -49,6 +59,9 @@ sealed interface ListLoadable<T : Serializable?> {
      **/
     @JvmInline
     value class Failed<T : Serializable?>(val error: Throwable) : ListLoadable<T> {
+        override val isLoaded
+            get() = false
+
         override fun toLoadable(): Loadable<SerializableList<T>> {
             return Loadable.Failed(error)
         }
