@@ -6,20 +6,15 @@ import com.jeanbarrossilva.loadable.ifLoaded
 import com.jeanbarrossilva.loadable.map
 import java.io.Serializable
 import kotlin.experimental.ExperimentalTypeInference
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.withIndex
-import kotlinx.coroutines.launch
 
 /** Returns a [Flow] containing only [failed][Loadable.Failed] values. **/
 fun <T : Serializable?> Flow<Loadable<T>>.filterIsFailed(): Flow<Loadable.Failed<T>> {
@@ -43,21 +38,6 @@ fun <I : Serializable?, O : Serializable?> Flow<Loadable<I>>.innerMap(transform:
         loadable.map {
             transform(it)
         }
-    }
-}
-
-/**
- * Maps each emission made to this [Flow] to a [Loadable].
- *
- * Emits, initially, [Loadable.Loading], [Loadable.Loaded] for each value and [Loadable.Failed] for
- * thrown [Throwable]s.
- *
- * @param coroutineScope [CoroutineScope] in which the resulting [StateFlow] will be started and its
- * value will be shared.
- **/
-fun <T : Serializable?> Flow<T>.loadable(coroutineScope: CoroutineScope): StateFlow<Loadable<T>> {
-    return loadableFlow(coroutineScope) {
-        collect(::load)
     }
 }
 
@@ -122,29 +102,6 @@ fun <T : Serializable> Flow<Loadable<T?>>.unwrapContent(): Flow<Loadable<T>> {
     return filter {
         it.ifLoaded { this != null } ?: true
     } as Flow<Loadable<T>>
-}
-
-/**
- * Creates a [StateFlow] of [Loadable]s that's started and shared in the [coroutineScope] and emits
- * them through [load] with a [LoadableScope]. Its initial [value][StateFlow.value] is
- * [loading][Loadable.Loading].
- *
- * @param coroutineScope [CoroutineScope] in which the resulting [StateFlow] will be started and its
- * value will be shared.
- * @param load Operations to be made on the [LoadableScope] responsible for emitting [Loadable]s
- * sent to it to the created [StateFlow].
- **/
-fun <T : Serializable?> loadableFlow(
-    coroutineScope: CoroutineScope,
-    load: suspend LoadableScope<T>.() -> Unit
-): StateFlow<Loadable<T>> {
-    return loadableFlow<T>()
-        .apply {
-            coroutineScope.launch {
-                emitAll(emptyLoadableFlow(load))
-            }
-        }
-        .asStateFlow()
 }
 
 /**

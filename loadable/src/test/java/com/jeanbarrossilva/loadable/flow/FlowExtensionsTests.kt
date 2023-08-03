@@ -51,15 +51,6 @@ internal class FlowExtensionsTests {
     }
 
     @Test
-    fun `GIVEN a Loadable Flow with an initial content WHEN collecting it THEN the value that's emitted first is a Loaded one`() { // ktlint-disable max-line-length
-        runTest {
-            loadableFlowOf(0).test {
-                assertEquals(Loadable.Loaded(0), awaitItem())
-            }
-        }
-    }
-
-    @Test
     fun `GIVEN a Loadable Flow WHEN filtering Failed values THEN they're all emitted`() {
         runTest {
             flow {
@@ -158,9 +149,10 @@ internal class FlowExtensionsTests {
     @Test
     fun `GIVEN a Flow WHEN converting it into a Loadable one in a CoroutineScope THEN Loading is only emitted once as an initial value`() { // ktlint-disable max-line-length
         runTest {
-            flowOf(0).loadable(this).test {
+            flowOf(0).loadable().test {
                 assertIs<Loadable.Loading<Int>>(awaitItem())
                 assertEquals(Loadable.Loaded(0), awaitItem())
+                awaitComplete()
             }
         }
     }
