@@ -1,5 +1,7 @@
 package com.jeanbarrossilva.loadable
 
+import java.io.NotSerializableException
+
 /**
  * [Content][Loadable.Loaded.content] of the given [Loadable] if it's [loaded][Loadable.Loaded];
  * otherwise, `null`.
@@ -27,7 +29,10 @@ inline fun <I, O> Loadable<I>.ifLoaded(operation: I.() -> O): O? {
  *
  * @param transform Transformation to be done to the [loaded][Loadable.Loaded]
  * [content][Loadable.Loaded.content].
+ * @throws NotSerializableException If this is [loaded][Loadable.Loaded] and the result of
+ * [transform] cannot be serialized.
  **/
+@Throws(NotSerializableException::class)
 inline fun <I, O> Loadable<I>.map(transform: (I) -> O): Loadable<O> {
     return when (this) {
         is Loadable.Loading -> Loadable.Loading()

@@ -1,6 +1,7 @@
 package com.jeanbarrossilva.loadable
 
 import java.io.ByteArrayOutputStream
+import java.io.NotSerializableException
 import java.io.ObjectOutputStream
 
 /**
@@ -13,7 +14,9 @@ import java.io.ObjectOutputStream
  * - `null` (with [T] being a nullable type), [Loadable.Loaded];
  * - `null` (with [T] being a non-`null` type), [Loadable.Loading];
  * - of a type other than [T]`?`, `null`.
+ * @throws NotSerializableException If this is a [T] and cannot be serialized.
  **/
+@Throws(NotSerializableException::class)
 inline fun <reified T> Any?.loadable(): Loadable<T>? {
     return when (this) {
         is Throwable -> Loadable.Failed(this)

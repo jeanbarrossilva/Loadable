@@ -2,6 +2,7 @@ package com.jeanbarrossilva.loadable.flow
 
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.LoadableScope
+import java.io.NotSerializableException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,6 +14,9 @@ import kotlinx.coroutines.launch
  *
  * Emits, initially, [Loadable.Loading], [Loadable.Loaded] for each value and [Loadable.Failed] for
  * thrown [Throwable]s.
+ *
+ * **NOTE**: Emitting a value that cannot be serialized to the resulting [MutableStateFlow] and
+ * performing a terminal operation on it will result in a [NotSerializableException] being thrown.
  *
  * @param coroutineScope [CoroutineScope] in which the resulting [MutableStateFlow] will be started
  * and its [value][MutableStateFlow.value] will be shared.
@@ -47,7 +51,12 @@ fun <T> loadableFlow(): MutableStateFlow<Loadable<T>> {
     return MutableStateFlow(Loadable.Loading())
 }
 
-/** Creates a [MutableStateFlow] with a [Loadable.Loaded] that wraps the given [content]. **/
+/**
+ * Creates a [MutableStateFlow] with a [Loadable.Loaded] that wraps the given [content].
+ *
+ * @throws NotSerializableException If the [content] cannot be serialized.
+ **/
+@Throws(NotSerializableException::class)
 fun <T> loadableFlowOf(content: T): MutableStateFlow<Loadable<T>> {
     return MutableStateFlow(Loadable.Loaded(content))
 }
