@@ -1,9 +1,9 @@
 package com.jeanbarrossilva.loadable
 
-import java.io.Serializable
+import java.io.NotSerializableException
 
 /** Scope through which [Loadable]s are sent. **/
-abstract class LoadableScope<T : Serializable?> internal constructor() {
+abstract class LoadableScope<T> internal constructor() {
     /** Sends a [Loadable.Loading]. **/
     suspend fun load() {
         send(Loadable.Loading())
@@ -13,7 +13,9 @@ abstract class LoadableScope<T : Serializable?> internal constructor() {
      * Sends a [Loadable.Loaded] with the given [content].
      *
      * @param content Value to be set as the [Loadable.Loaded.content].
+     * @throws NotSerializableException If the [content] cannot be serialized.
      **/
+    @Throws(NotSerializableException::class)
     suspend fun load(content: T) {
         send(Loadable.Loaded(content))
     }

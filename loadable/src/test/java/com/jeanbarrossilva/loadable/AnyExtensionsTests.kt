@@ -1,36 +1,49 @@
 package com.jeanbarrossilva.loadable
 
-import java.io.Serializable
+import java.io.NotSerializableException
 import java.util.Stack
+import kotlin.test.Test
+import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
 import kotlin.test.assertNull
 import org.junit.Assert.assertEquals
-import org.junit.Test
 
 internal class AnyExtensionsTests {
     @Test
     fun `GIVEN a Throwable WHEN converting it into a Loadable THEN it's failed`() {
         val throwable = NullPointerException()
-        assertEquals(Loadable.Failed<Serializable>(throwable), throwable.loadable<Serializable>())
+        assertEquals(Loadable.Failed<Any?>(throwable), throwable.loadable<Any?>())
     }
 
     @Test
     fun `GIVEN a null Any WHEN converting it into a Loadable of nullable Any THEN it's loaded`() {
-        assertEquals(Loadable.Loaded(null), (null as Serializable?).loadable<Serializable?>())
+        assertEquals(Loadable.Loaded(null), null.loadable<Any?>())
     }
 
     @Test
-    fun `GIVEN a non-null Serializable WHEN converting it into a Loadable of Serializable THEN it's loaded`() { // ktlint-disable max-line-length
-        assertEquals(Loadable.Loaded(0), 0.loadable<Serializable>())
+    fun `GIVEN a non-null Any WHEN converting it into a Loadable of nullable Any THEN it's loaded`() { // ktlint-disable max-line-length
+        assertEquals(Loadable.Loaded(0), 0.loadable<Any?>())
     }
 
     @Test
     fun `GIVEN a null Any WHEN converting it into a Loadable of non-null Any THEN it's loading`() {
-        assertIs<Loadable.Loading<Serializable>>((null as Serializable?).loadable<Serializable>())
+        assertIs<Loadable.Loading<Any>>(null.loadable<Any>())
     }
 
     @Test
     fun `GIVEN a non-null object WHEN converting it into a Loadable of a different type THEN it's null`() { // ktlint-disable max-line-length
         assertNull(0.loadable<Array<Stack<String>>>())
+    }
+
+    @Test
+    fun `GIVEN an un-serializable object WHEN requiring it to be serializable THEN it throws`() {
+        assertFailsWith<NotSerializableException> {
+            requireSerializable(Thread.UncaughtExceptionHandler { _, _ -> })
+        }
+    }
+
+    @Test
+    fun `GIVEN a serializable object WHEN requiring it to be serializable THEN it is`() {
+        requireSerializable(listOf(1, 2, 3))
     }
 }

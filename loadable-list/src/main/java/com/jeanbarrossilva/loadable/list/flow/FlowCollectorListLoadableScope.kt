@@ -2,7 +2,6 @@ package com.jeanbarrossilva.loadable.list.flow
 
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.ListLoadableScope
-import java.io.Serializable
 import kotlinx.coroutines.flow.FlowCollector
 
 /**
@@ -10,7 +9,7 @@ import kotlinx.coroutines.flow.FlowCollector
  *
  * @param collector [FlowCollector] to which sent [ListLoadable]s will be emitted.
  **/
-internal class FlowCollectorListLoadableScope<T : Serializable?>(
+internal class FlowCollectorListLoadableScope<T>(
     private val collector: FlowCollector<ListLoadable<T>>
 ) : ListLoadableScope<T>() {
     override suspend fun send(listLoadable: ListLoadable<T>) {

@@ -2,7 +2,7 @@ package com.jeanbarrossilva.loadable.flow
 
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.LoadableScope
-import java.io.Serializable
+import java.io.NotSerializableException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,11 +15,13 @@ import kotlinx.coroutines.launch
  * Emits, initially, [Loadable.Loading], [Loadable.Loaded] for each value and [Loadable.Failed] for
  * thrown [Throwable]s.
  *
+ * **NOTE**: Emitting a value that cannot be serialized to the resulting [MutableStateFlow] and
+ * performing a terminal operation on it will result in a [NotSerializableException] being thrown.
+ *
  * @param coroutineScope [CoroutineScope] in which the resulting [MutableStateFlow] will be started
  * and its [value][MutableStateFlow.value] will be shared.
  **/
-fun <T : Serializable?> Flow<T>.loadable(coroutineScope: CoroutineScope):
-    MutableStateFlow<Loadable<T>> {
+fun <T> Flow<T>.loadable(coroutineScope: CoroutineScope): MutableStateFlow<Loadable<T>> {
     return loadableFlow(coroutineScope) {
         collect(::load)
     }
@@ -35,10 +37,8 @@ fun <T : Serializable?> Flow<T>.loadable(coroutineScope: CoroutineScope):
  * @param load Operations to be made on the [LoadableScope] responsible for emitting [Loadable]s
  * sent to it to the created [MutableStateFlow].
  **/
-fun <T : Serializable?> loadableFlow(
-    coroutineScope: CoroutineScope,
-    load: suspend LoadableScope<T>.() -> Unit
-): MutableStateFlow<Loadable<T>> {
+fun <T> loadableFlow(coroutineScope: CoroutineScope, load: suspend LoadableScope<T>.() -> Unit):
+    MutableStateFlow<Loadable<T>> {
     return loadableFlow<T>().apply {
         coroutineScope.launch {
             emitAll(emptyLoadableFlow(load))
@@ -47,11 +47,16 @@ fun <T : Serializable?> loadableFlow(
 }
 
 /** Creates a [MutableStateFlow] with a [Loadable.Loading] as its initial value. **/
-fun <T : Serializable?> loadableFlow(): MutableStateFlow<Loadable<T>> {
+fun <T> loadableFlow(): MutableStateFlow<Loadable<T>> {
     return MutableStateFlow(Loadable.Loading())
 }
 
-/** Creates a [MutableStateFlow] with a [Loadable.Loaded] that wraps the given [content]. **/
-fun <T : Serializable?> loadableFlowOf(content: T): MutableStateFlow<Loadable<T>> {
+/**
+ * Creates a [MutableStateFlow] with a [Loadable.Loaded] that wraps the given [content].
+ *
+ * @throws NotSerializableException If the [content] cannot be serialized.
+ **/
+@Throws(NotSerializableException::class)
+fun <T> loadableFlowOf(content: T): MutableStateFlow<Loadable<T>> {
     return MutableStateFlow(Loadable.Loaded(content))
 }

@@ -2,14 +2,13 @@ package com.jeanbarrossilva.loadable.list.flow
 
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.ListLoadableScope
-import java.io.Serializable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.flow
 
 /** Returns a [Flow] containing only non-[loading][ListLoadable.Loading] values. **/
-fun <T : Serializable?> Flow<ListLoadable<T>>.filterNotLoading(): Flow<ListLoadable<T>> {
+fun <T> Flow<ListLoadable<T>>.filterNotLoading(): Flow<ListLoadable<T>> {
     return filterNot {
         it is ListLoadable.Loading
     }
@@ -22,8 +21,7 @@ fun <T : Serializable?> Flow<ListLoadable<T>>.filterNotLoading(): Flow<ListLoada
  * @param load Operations to be made on the [ListLoadableScope] responsible for emitting
  * [ListLoadable]s sent to it to the created [Flow].
  **/
-fun <T : Serializable?> listLoadableFlow(load: suspend ListLoadableScope<T>.() -> Unit):
-    Flow<ListLoadable<T>> {
+fun <T> listLoadableFlow(load: suspend ListLoadableScope<T>.() -> Unit): Flow<ListLoadable<T>> {
     return emptyListLoadableFlow {
         load()
         load.invoke(this)
@@ -37,9 +35,8 @@ fun <T : Serializable?> listLoadableFlow(load: suspend ListLoadableScope<T>.() -
  * @param load Operations to be made on the [ListLoadableScope] responsible for emitting
  * [ListLoadable]s sent to it to the created [Flow].
  **/
-internal fun <T : Serializable?> emptyListLoadableFlow(
-    load: suspend ListLoadableScope<T>.() -> Unit
-): Flow<ListLoadable<T>> {
+internal fun <T> emptyListLoadableFlow(load: suspend ListLoadableScope<T>.() -> Unit):
+    Flow<ListLoadable<T>> {
     return flow<ListLoadable<T>> {
         FlowCollectorListLoadableScope(this).apply {
             load.invoke(this)

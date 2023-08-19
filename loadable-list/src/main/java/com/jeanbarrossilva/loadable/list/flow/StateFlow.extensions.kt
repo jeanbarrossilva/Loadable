@@ -6,7 +6,6 @@ import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.ListLoadableScope
 import com.jeanbarrossilva.loadable.list.SerializableList
 import com.jeanbarrossilva.loadable.list.toListLoadable
-import java.io.Serializable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -25,7 +24,7 @@ import kotlinx.coroutines.launch
  * [value][StateFlow.value] will be shared.
  * @param sharingStarted Strategy for controlling when sharing starts and ends.
  **/
-fun <T : Serializable?> Flow<SerializableList<T>>.listLoadable(
+fun <T> Flow<SerializableList<T>>.listLoadable(
     coroutineScope: CoroutineScope,
     sharingStarted: SharingStarted
 ): StateFlow<ListLoadable<T>> {
@@ -46,7 +45,7 @@ fun <T : Serializable?> Flow<SerializableList<T>>.listLoadable(
  * @param load Operations to be made on the [ListLoadableScope] responsible for emitting
  * [ListLoadable]s sent to it to the created [StateFlow].
  **/
-fun <T : Serializable?> listLoadableFlow(
+fun <T> listLoadableFlow(
     coroutineScope: CoroutineScope,
     load: suspend ListLoadableScope<T>.() -> Unit
 ): StateFlow<ListLoadable<T>> {

@@ -18,7 +18,6 @@ import com.google.accompanist.placeholder.placeholder
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.ifLoaded
 import com.jeanbarrossilva.loadable.placeholder.test.Loading
-import java.io.Serializable
 
 /** Default values of a [Placeholder]. **/
 object PlaceholderDefaults {
@@ -41,7 +40,7 @@ object PlaceholderDefaults {
  * @param content Content that's shown if the [loadable] is [loaded][Loadable.Loaded].
  **/
 @Composable
-fun <T : Serializable?> Placeholder(
+fun <T> Placeholder(
     loadable: Loadable<T>,
     modifier: Modifier = Modifier,
     shape: Shape = PlaceholderDefaults.shape,

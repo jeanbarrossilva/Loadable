@@ -1,6 +1,5 @@
 package com.jeanbarrossilva.loadable
 
-import java.io.Serializable
 import kotlin.test.assertIs
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -8,8 +7,8 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 internal class LoadableScopeTests {
-    private val sent = mutableListOf<Loadable<Serializable?>>()
-    private val scope: LoadableScope<Serializable?> = LoadableScope(sent::add)
+    private val sent = mutableListOf<Loadable<Any?>>()
+    private val scope: LoadableScope<Any?> = LoadableScope(sent::add)
 
     @After
     fun tearDown() {
@@ -19,7 +18,7 @@ internal class LoadableScopeTests {
     @Test
     fun `GIVEN a Loading Loadable WHEN sending it to the scope THEN it's received`() {
         runTest { scope.load() }
-        assertIs<Loadable.Loading<Serializable?>>(sent.single())
+        assertIs<Loadable.Loading<Any?>>(sent.single())
     }
 
     @Test
@@ -32,7 +31,7 @@ internal class LoadableScopeTests {
     fun `GIVEN a Failed Loadable WHEN sending it to the scope THEN it's received`() {
         runTest { scope.fail(NullPointerException()) }
         sent.single().let {
-            assertIs<Loadable.Failed<Serializable?>>(it)
+            assertIs<Loadable.Failed<Any?>>(it)
             assertIs<NullPointerException>(it.error)
         }
     }

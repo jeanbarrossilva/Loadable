@@ -2,7 +2,6 @@ package com.jeanbarrossilva.loadable.flow
 
 import app.cash.turbine.test
 import com.jeanbarrossilva.loadable.Loadable
-import java.io.Serializable
 import kotlin.test.Test
 import kotlin.test.assertIs
 import kotlinx.coroutines.flow.flow
@@ -14,8 +13,8 @@ internal class FlowExtensionsTests {
     @Test
     fun `GIVEN a Loadable Flow built through a scope WHEN loading THEN a Loading has been emitted`() { // ktlint-disable max-line-length
         runTest {
-            loadableFlow<Serializable?> { load() }.test {
-                repeat(2) { assertIs<Loadable.Loading<Serializable?>>(awaitItem()) }
+            loadableFlow<Any?> { load() }.test {
+                repeat(2) { assertIs<Loadable.Loading<Any?>>(awaitItem()) }
                 awaitComplete()
             }
         }
@@ -24,7 +23,7 @@ internal class FlowExtensionsTests {
     @Test
     fun `GIVEN a Loadable Flow built through a scope WHEN loaded THEN a Loaded has been emitted`() {
         runTest {
-            loadableFlow<Serializable?> { load(null) }.unwrap().test {
+            loadableFlow<Any?> { load(null) }.unwrap().test {
                 assertEquals(null, awaitItem())
                 awaitComplete()
             }
@@ -34,7 +33,7 @@ internal class FlowExtensionsTests {
     @Test
     fun `GIVEN a Loadable Flow built through a scope WHEN failed THEN a Failed has been emitted`() {
         runTest {
-            loadableFlow<Serializable?> { fail(NullPointerException()) }.filterIsFailed().test {
+            loadableFlow<Any?> { fail(NullPointerException()) }.filterIsFailed().test {
                 awaitItem()
                 awaitComplete()
             }
@@ -44,8 +43,8 @@ internal class FlowExtensionsTests {
     @Test
     fun `GIVEN a Loadable Flow without an initial content WHEN collecting it THEN the value that's emitted first is a Loading one`() { // ktlint-disable max-line-length
         runTest {
-            loadableFlow<Serializable>().test {
-                assertIs<Loadable.Loading<Serializable>>(awaitItem())
+            loadableFlow<Any>().test {
+                assertIs<Loadable.Loading<Any>>(awaitItem())
             }
         }
     }
@@ -136,7 +135,7 @@ internal class FlowExtensionsTests {
     @Test
     fun `GIVEN a Flow WHEN converting it into a Loadable one THEN thrown exceptions are emitted as Failed`() { // ktlint-disable max-line-length
         runTest {
-            flow<Serializable> { 0 / 0 }
+            flow<Any> { 0 / 0 }
                 .loadable()
                 .filterIsFailed()
                 .test {
@@ -198,8 +197,8 @@ internal class FlowExtensionsTests {
     @Test
     fun `GIVEN a Loadable Flow that's Loading WHEN sending its Loadables into a LoadableScope THEN it loads`() { // ktlint-disable max-line-length
         runTest {
-            emptyLoadableFlow(loadableFlow<Serializable?>()::sendTo).test {
-                assertIs<Loadable.Loading<Serializable?>>(awaitItem())
+            emptyLoadableFlow(loadableFlow<Any?>()::sendTo).test {
+                assertIs<Loadable.Loading<Any?>>(awaitItem())
             }
         }
     }
@@ -221,11 +220,11 @@ internal class FlowExtensionsTests {
         val error = Throwable()
         runTest {
             loadableFlow {
-                emptyLoadableFlow<Serializable?> { fail(error) }.sendTo(this)
+                emptyLoadableFlow<Any?> { fail(error) }.sendTo(this)
             }
                 .test {
                     awaitItem()
-                    assertEquals(Loadable.Failed<Serializable?>(error), awaitItem())
+                    assertEquals(Loadable.Failed<Any?>(error), awaitItem())
                     awaitComplete()
                 }
         }

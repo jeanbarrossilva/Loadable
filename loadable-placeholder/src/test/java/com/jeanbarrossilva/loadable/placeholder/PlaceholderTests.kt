@@ -44,7 +44,7 @@ internal class PlaceholderTests {
     @Test
     fun isNotLoadingWhenLoadableIsFailed() {
         composeRule.setContent {
-            Placeholder(Loadable.Failed(Exception()), Modifier.tagAsPlaceholder()) {
+            Placeholder(Loadable.Failed<Any?>(Exception()), Modifier.tagAsPlaceholder()) {
             }
         }
         composeRule.onPlaceholder().assertIsNotLoading()
