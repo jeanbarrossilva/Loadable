@@ -31,7 +31,9 @@ inline fun <reified T> Any?.loadable(): Loadable<T>? {
  *
  * @param value Object whose serialization capability will be required.
  * @return The [value] itself.
+ * @throws NotSerializableException If the [value] cannot be serialized.
  **/
+@Throws(NotSerializableException::class)
 fun <T> requireSerializable(value: T): T {
     ByteArrayOutputStream().use { byteArrayOutputStream ->
         ObjectOutputStream(byteArrayOutputStream).use { objectOutputStream ->
