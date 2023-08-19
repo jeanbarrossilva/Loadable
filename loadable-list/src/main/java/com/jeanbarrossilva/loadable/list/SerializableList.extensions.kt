@@ -1,9 +1,7 @@
 package com.jeanbarrossilva.loadable.list
 
-import java.io.Serializable
-
 /** Converts this [SerializableList] into a [ListLoadable]. **/
-fun <T : Serializable?> SerializableList<T>.toListLoadable(): ListLoadable<T> {
+fun <T> SerializableList<T>.toListLoadable(): ListLoadable<T> {
     return if (isEmpty()) ListLoadable.Empty() else ListLoadable.Populated(this)
 }
 

@@ -1,12 +1,10 @@
 package com.jeanbarrossilva.loadable
 
-import java.io.Serializable
-
 /**
  * [Content][Loadable.Loaded.content] of the given [Loadable] if it's [loaded][Loadable.Loaded];
  * otherwise, `null`.
  **/
-inline val <T : Serializable?> Loadable<T>.contentOrNull
+inline val <T> Loadable<T>.contentOrNull
     get() = ifLoaded { this }
 
 /**
@@ -16,7 +14,7 @@ inline val <T : Serializable?> Loadable<T>.contentOrNull
  * @param operation Callback to be run on the [loaded][Loadable.Loaded]
  * [content][Loadable.Loaded.content].
  **/
-inline fun <I : Serializable?, O> Loadable<I>.ifLoaded(operation: I.() -> O): O? {
+inline fun <I, O> Loadable<I>.ifLoaded(operation: I.() -> O): O? {
     return if (this is Loadable.Loaded) content.operation() else null
 }
 
@@ -30,8 +28,7 @@ inline fun <I : Serializable?, O> Loadable<I>.ifLoaded(operation: I.() -> O): O?
  * @param transform Transformation to be done to the [loaded][Loadable.Loaded]
  * [content][Loadable.Loaded.content].
  **/
-inline fun <I : Serializable?, O : Serializable?> Loadable<I>.map(transform: (I) -> O):
-    Loadable<O> {
+inline fun <I, O> Loadable<I>.map(transform: (I) -> O): Loadable<O> {
     return when (this) {
         is Loadable.Loading -> Loadable.Loading()
         is Loadable.Loaded -> Loadable.Loaded(transform(content))

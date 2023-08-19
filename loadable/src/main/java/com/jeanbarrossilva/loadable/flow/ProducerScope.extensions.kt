@@ -1,7 +1,6 @@
 package com.jeanbarrossilva.loadable.flow
 
 import com.jeanbarrossilva.loadable.Loadable
-import java.io.Serializable
 import kotlinx.coroutines.channels.ProducerScope
 
 /**
@@ -9,6 +8,6 @@ import kotlinx.coroutines.channels.ProducerScope
  *
  * @param element Element to be sent.
  **/
-suspend fun <T : Serializable?> ProducerScope<Loadable<T>>.send(element: T) {
+suspend fun <T> ProducerScope<Loadable<T>>.send(element: T) {
     send(Loadable.Loaded(element))
 }

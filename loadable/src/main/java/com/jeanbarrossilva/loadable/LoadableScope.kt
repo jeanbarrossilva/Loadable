@@ -1,9 +1,7 @@
 package com.jeanbarrossilva.loadable
 
-import java.io.Serializable
-
 /** Scope through which [Loadable]s are sent. **/
-abstract class LoadableScope<T : Serializable?> internal constructor() {
+abstract class LoadableScope<T> internal constructor() {
     /** Sends a [Loadable.Loading]. **/
     suspend fun load() {
         send(Loadable.Loading())

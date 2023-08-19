@@ -1,18 +1,17 @@
 package com.jeanbarrossilva.loadable.list
 
 import com.jeanbarrossilva.loadable.Loadable
-import java.io.Serializable
 
 /**
  * [Loadable]-like structure for representing different stages of an asynchronously-loaded
  * [SerializableList], as well as its "population" state.
  **/
-sealed interface ListLoadable<T : Serializable?> {
+sealed interface ListLoadable<T> {
     /** Whether this [ListLoadable] has been successfully loaded. **/
     val isLoaded: Boolean
 
     /** Stage in which the [SerializableList] is loading. **/
-    class Loading<T : Serializable?> : ListLoadable<T> {
+    class Loading<T> : ListLoadable<T> {
         override val isLoaded = false
 
         override fun toLoadable(): Loadable<SerializableList<T>> {
@@ -21,7 +20,7 @@ sealed interface ListLoadable<T : Serializable?> {
     }
 
     /** Stage in which the [SerializableList] has been loaded but it's empty. **/
-    class Empty<T : Serializable?> : ListLoadable<T> {
+    class Empty<T> : ListLoadable<T> {
         override val isLoaded = true
 
         override fun toLoadable(): Loadable<SerializableList<T>> {
@@ -37,7 +36,7 @@ sealed interface ListLoadable<T : Serializable?> {
      * @throws IllegalArgumentException If [content] is empty.
      */
     @JvmInline
-    value class Populated<T : Serializable?>(val content: SerializableList<T>) : ListLoadable<T> {
+    value class Populated<T>(val content: SerializableList<T>) : ListLoadable<T> {
         override val isLoaded
             get() = true
 
@@ -58,7 +57,7 @@ sealed interface ListLoadable<T : Serializable?> {
      * @param error [Throwable] that's been thrown while trying to load the [SerializableList].
      **/
     @JvmInline
-    value class Failed<T : Serializable?>(val error: Throwable) : ListLoadable<T> {
+    value class Failed<T>(val error: Throwable) : ListLoadable<T> {
         override val isLoaded
             get() = false
 

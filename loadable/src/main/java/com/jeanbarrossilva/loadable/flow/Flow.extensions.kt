@@ -4,7 +4,6 @@ import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.LoadableScope
 import com.jeanbarrossilva.loadable.ifLoaded
 import com.jeanbarrossilva.loadable.map
-import java.io.Serializable
 import kotlin.experimental.ExperimentalTypeInference
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.flow.Flow
@@ -17,12 +16,12 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.withIndex
 
 /** Returns a [Flow] containing only [failed][Loadable.Failed] values. **/
-fun <T : Serializable?> Flow<Loadable<T>>.filterIsFailed(): Flow<Loadable.Failed<T>> {
+fun <T> Flow<Loadable<T>>.filterIsFailed(): Flow<Loadable.Failed<T>> {
     return filterIsInstance()
 }
 
 /** Returns a [Flow] containing only [loaded][Loadable.Loaded] values. **/
-fun <T : Serializable?> Flow<Loadable<T>>.filterIsLoaded(): Flow<Loadable.Loaded<T>> {
+fun <T> Flow<Loadable<T>>.filterIsLoaded(): Flow<Loadable.Loaded<T>> {
     return filterIsInstance()
 }
 
@@ -32,8 +31,7 @@ fun <T : Serializable?> Flow<Loadable<T>>.filterIsLoaded(): Flow<Loadable.Loaded
  *
  * @param transform Transformation to be done to the [content][Loadable.Loaded.content].
  **/
-fun <I : Serializable?, O : Serializable?> Flow<Loadable<I>>.innerMap(transform: suspend (I) -> O):
-    Flow<Loadable<O>> {
+fun <I, O> Flow<Loadable<I>>.innerMap(transform: suspend (I) -> O): Flow<Loadable<O>> {
     return map { loadable: Loadable<I> ->
         loadable.map {
             transform(it)
@@ -47,7 +45,7 @@ fun <I : Serializable?, O : Serializable?> Flow<Loadable<I>>.innerMap(transform:
  * Emits, initially, [Loadable.Loading], [Loadable.Loaded] for each value and [Loadable.Failed] for
  * thrown [Throwable]s.
  **/
-fun <T : Serializable?> Flow<T>.loadable(): Flow<Loadable<T>> {
+fun <T> Flow<T>.loadable(): Flow<Loadable<T>> {
     return loadableFlow {
         collect(::load)
     }
@@ -62,7 +60,7 @@ fun <T : Serializable?> Flow<T>.loadable(): Flow<Loadable<T>> {
  * [loaded][Loadable.Loaded];
  * - [LoadableScope.fail] with the [error][Loadable.Failed.error] when [failed][Loadable.Failed].
  **/
-suspend fun <T : Serializable?> Flow<T>.loadTo(loadableScope: LoadableScope<T>) {
+suspend fun <T> Flow<T>.loadTo(loadableScope: LoadableScope<T>) {
     loadable()
         // Ignores the initial loading stage, since public Loadable-Flow-creator functions'
         // LoadableScope always loads.
@@ -79,7 +77,7 @@ suspend fun <T : Serializable?> Flow<T>.loadTo(loadableScope: LoadableScope<T>) 
  * [loaded][Loadable.Loaded];
  * - [LoadableScope.fail] with the [error][Loadable.Failed.error] when [failed][Loadable.Failed].
  **/
-suspend fun <T : Serializable?> Flow<Loadable<T>>.sendTo(loadableScope: LoadableScope<T>) {
+suspend fun <T> Flow<Loadable<T>>.sendTo(loadableScope: LoadableScope<T>) {
     collect(loadableScope::send)
 }
 
@@ -87,7 +85,7 @@ suspend fun <T : Serializable?> Flow<Loadable<T>>.sendTo(loadableScope: Loadable
  * Unwraps [Loadable.Loaded] emissions and returns a [Flow] containing only their
  * [content][Loadable.Loaded.content]s.
  **/
-fun <T : Serializable?> Flow<Loadable<T>>.unwrap(): Flow<T> {
+fun <T> Flow<Loadable<T>>.unwrap(): Flow<T> {
     return filterIsLoaded().map {
         it.content
     }
@@ -97,7 +95,7 @@ fun <T : Serializable?> Flow<Loadable<T>>.unwrap(): Flow<T> {
  * Unwraps [Loadable.Loaded] emissions and returns a [Flow] containing only those that have a
  * non-`null` [content][Loadable.Loaded.content].
  **/
-fun <T : Serializable> Flow<Loadable<T?>>.unwrapContent(): Flow<Loadable<T>> {
+fun <T : Any> Flow<Loadable<T?>>.unwrapContent(): Flow<Loadable<T>> {
     @Suppress("UNCHECKED_CAST")
     return filter {
         it.ifLoaded { this != null } ?: true
@@ -111,7 +109,7 @@ fun <T : Serializable> Flow<Loadable<T?>>.unwrapContent(): Flow<Loadable<T>> {
  * @param load Operations to be made on the [LoadableScope] responsible for emitting [Loadable]s
  * sent to it to the created [Flow].
  **/
-fun <T : Serializable?> loadableFlow(load: suspend LoadableScope<T>.() -> Unit): Flow<Loadable<T>> {
+fun <T> loadableFlow(load: suspend LoadableScope<T>.() -> Unit): Flow<Loadable<T>> {
     return emptyLoadableFlow {
         load()
         load.invoke(this)
@@ -125,9 +123,8 @@ fun <T : Serializable?> loadableFlow(load: suspend LoadableScope<T>.() -> Unit):
  * [Flow].
  **/
 @OptIn(ExperimentalTypeInference::class)
-fun <T : Serializable?> loadableChannelFlow(
-    @BuilderInference block: suspend ProducerScope<Loadable<T>>.() -> Unit
-): Flow<Loadable<T>> {
+fun <T> loadableChannelFlow(@BuilderInference block: suspend ProducerScope<Loadable<T>>.() -> Unit):
+    Flow<Loadable<T>> {
     return channelFlow {
         send(Loadable.Loading())
         block()
@@ -142,8 +139,7 @@ fun <T : Serializable?> loadableChannelFlow(
  * @param load Operations to be made on the [LoadableScope] responsible for emitting [Loadable]s
  * sent to it to the created [Flow].
  **/
-internal fun <T : Serializable?> emptyLoadableFlow(load: suspend LoadableScope<T>.() -> Unit):
-    Flow<Loadable<T>> {
+internal fun <T> emptyLoadableFlow(load: suspend LoadableScope<T>.() -> Unit): Flow<Loadable<T>> {
     return flow<Loadable<T>> {
         FlowCollectorLoadableScope(this).apply {
             load.invoke(this)
@@ -165,7 +161,7 @@ private fun <T> Flow<T>.ignore(count: Int): Flow<T> {
 }
 
 /** Catches thrown exceptions by emitting a [Loadable.Failed]. **/
-private fun <T : Serializable?> Flow<Loadable<T>>.catchAsFailed(): Flow<Loadable<T>> {
+private fun <T> Flow<Loadable<T>>.catchAsFailed(): Flow<Loadable<T>> {
     return catch {
         emit(Loadable.Failed(it))
     }

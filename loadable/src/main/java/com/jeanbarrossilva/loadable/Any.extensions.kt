@@ -1,6 +1,7 @@
 package com.jeanbarrossilva.loadable
 
-import java.io.Serializable
+import java.io.ByteArrayOutputStream
+import java.io.ObjectOutputStream
 
 /**
  * Converts this into a [Loadable].
@@ -13,11 +14,26 @@ import java.io.Serializable
  * - `null` (with [T] being a non-`null` type), [Loadable.Loading];
  * - of a type other than [T]`?`, `null`.
  **/
-inline fun <reified T : Serializable?> Any?.loadable(): Loadable<T>? {
+inline fun <reified T> Any?.loadable(): Loadable<T>? {
     return when (this) {
         is Throwable -> Loadable.Failed(this)
         is T -> Loadable.Loaded(this)
         null -> Loadable.Loading()
         else -> null
     }
+}
+
+/**
+ * Requires the [value] to be serializable.
+ *
+ * @param value Object whose serialization capability will be required.
+ * @return The [value] itself.
+ **/
+fun <T> requireSerializable(value: T): T {
+    ByteArrayOutputStream().use { byteArrayOutputStream ->
+        ObjectOutputStream(byteArrayOutputStream).use { objectOutputStream ->
+            objectOutputStream.writeObject(value)
+        }
+    }
+    return value
 }

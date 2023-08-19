@@ -2,7 +2,6 @@ package com.jeanbarrossilva.loadable.list
 
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.map
-import java.io.Serializable
 
 /**
  * Returns the first element of the [SerializableList] to match the given [predicate], wrapped by a
@@ -10,7 +9,7 @@ import java.io.Serializable
  *
  * @param predicate Condition to which the element to be found should conform.
  **/
-fun <T : Serializable?> ListLoadable<T>.find(predicate: (T) -> Boolean): Loadable<T?> {
+fun <T> ListLoadable<T>.find(predicate: (T) -> Boolean): Loadable<T?> {
     return toLoadable().map { content ->
         content.find(predicate)
     }
@@ -22,7 +21,7 @@ fun <T : Serializable?> ListLoadable<T>.find(predicate: (T) -> Boolean): Loadabl
  *
  * @param transform Transformation to be made to the [SerializableList].
  **/
-fun <I : Serializable?, O> ListLoadable<I>.ifPopulated(transform: SerializableList<I>.() -> O): O? {
+fun <I, O> ListLoadable<I>.ifPopulated(transform: SerializableList<I>.() -> O): O? {
     return if (this is ListLoadable.Populated) content.transform() else null
 }
 
@@ -34,9 +33,7 @@ fun <I : Serializable?, O> ListLoadable<I>.ifPopulated(transform: SerializableLi
  * @param transform Transformation to be made to the elements of the
  * [populated][ListLoadable.Populated] [SerializableList].
  **/
-inline fun <I : Serializable?, reified O : Serializable?> ListLoadable<I>.mapNotNull(
-    transform: (I) -> O?
-): ListLoadable<O> {
+inline fun <I, reified O> ListLoadable<I>.mapNotNull(transform: (I) -> O?): ListLoadable<O> {
     return when (this) {
         is ListLoadable.Loading ->
             ListLoadable.Loading()
