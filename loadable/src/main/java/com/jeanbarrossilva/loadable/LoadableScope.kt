@@ -9,7 +9,7 @@ abstract class LoadableScope<T> internal constructor() {
      *
      * @see load
      **/
-    internal abstract val serializability: Serializability
+    internal open val serializability = Serializability.default
 
     /** Sends a [Loadable.Loading]. **/
     suspend fun load() {

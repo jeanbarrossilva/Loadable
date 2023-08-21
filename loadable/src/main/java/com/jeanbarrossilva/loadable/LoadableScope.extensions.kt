@@ -7,7 +7,7 @@ package com.jeanbarrossilva.loadable
  * @param send Callback run whenever a [Loadable] is sent.
  **/
 internal fun <T> LoadableScope(
-    serializability: Serializability,
+    serializability: Serializability = Serializability.default,
     send: (Loadable<T>) -> Unit
 ): LoadableScope<T> {
     return object : LoadableScope<T>() {
