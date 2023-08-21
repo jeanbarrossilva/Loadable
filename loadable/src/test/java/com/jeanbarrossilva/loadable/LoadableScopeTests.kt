@@ -8,7 +8,7 @@ import org.junit.Test
 
 internal class LoadableScopeTests {
     private val sent = mutableListOf<Loadable<Any?>>()
-    private val scope: LoadableScope<Any?> = LoadableScope(sent::add)
+    private val scope: LoadableScope<Any?> = LoadableScope(send = sent::add)
 
     @After
     fun tearDown() {

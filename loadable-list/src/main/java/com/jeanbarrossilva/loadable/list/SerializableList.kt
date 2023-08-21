@@ -1,20 +1,22 @@
 package com.jeanbarrossilva.loadable.list
 
-import com.jeanbarrossilva.loadable.requireSerializable
+import com.jeanbarrossilva.loadable.Serializability
 import java.io.NotSerializableException
 import java.io.Serializable
 
 /**
  * [List] that conforms to [Serializable].
  *
+ * @param serializability Determines whether each of the [elements] should be serializable.
  * @param elements Instances of [T] contained in this [SerializableList].
- * @throws NotSerializableException If any of the [elements] cannot be serialized.
+ * @throws NotSerializableException If [serializability] is [enforced][Serializability.ENFORCED] and
+ * any of the [elements] cannot be serialized.
  **/
-@JvmInline
-value class SerializableList<T>
+data class SerializableList<T>
 @Throws(NotSerializableException::class)
-internal constructor(private val elements: List<T>) : List<T> by elements, Serializable {
+internal constructor(val serializability: Serializability, private val elements: List<T>) :
+    List<T> by elements, Serializable {
     init {
-        forEach(::requireSerializable)
+        forEach(serializability::check)
     }
 }

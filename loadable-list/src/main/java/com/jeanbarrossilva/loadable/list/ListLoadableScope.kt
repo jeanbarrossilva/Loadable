@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.loadable.list
 
+import com.jeanbarrossilva.loadable.Serializability
 import java.io.NotSerializableException
 
 /** Scope through which [ListLoadable]s are sent. **/
@@ -14,12 +15,17 @@ abstract class ListLoadableScope<T> internal constructor() {
      *
      * @param content [Array] to be converted into a [SerializableList] and sent either as a
      * [ListLoadable.Empty] or a [ListLoadable.Populated].
+     * @param serializability Determines whether each [content] element should be serializable.
      * @see Array.toSerializableList
-     * @throws NotSerializableException If any of the [content]'s elements cannot be serialized.
+     * @throws NotSerializableException If [serializability] is [enforced][Serializability.ENFORCED]
+     * and any of the [content]'s elements cannot be serialized.
      **/
     @Throws(NotSerializableException::class)
-    suspend fun load(vararg content: T) {
-        load(content.toSerializableList())
+    suspend fun load(
+        vararg content: T,
+        serializability: Serializability = Serializability.IGNORED
+    ) {
+        load(content.toSerializableList(serializability))
     }
 
     /**

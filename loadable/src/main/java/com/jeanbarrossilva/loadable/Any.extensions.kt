@@ -1,8 +1,6 @@
 package com.jeanbarrossilva.loadable
 
-import java.io.ByteArrayOutputStream
 import java.io.NotSerializableException
-import java.io.ObjectOutputStream
 
 /**
  * Converts this into a [Loadable].
@@ -24,21 +22,4 @@ inline fun <reified T> Any?.loadable(): Loadable<T>? {
         null -> Loadable.Loading()
         else -> null
     }
-}
-
-/**
- * Requires the [value] to be serializable.
- *
- * @param value Object whose serialization capability will be required.
- * @return The [value] itself.
- * @throws NotSerializableException If the [value] cannot be serialized.
- **/
-@Throws(NotSerializableException::class)
-fun <T> requireSerializable(value: T): T {
-    ByteArrayOutputStream().use { byteArrayOutputStream ->
-        ObjectOutputStream(byteArrayOutputStream).use { objectOutputStream ->
-            objectOutputStream.writeObject(value)
-        }
-    }
-    return value
 }
