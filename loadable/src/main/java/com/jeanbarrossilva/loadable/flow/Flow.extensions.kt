@@ -2,6 +2,7 @@ package com.jeanbarrossilva.loadable.flow
 
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.LoadableScope
+import com.jeanbarrossilva.loadable.Serializability
 import com.jeanbarrossilva.loadable.ifLoaded
 import com.jeanbarrossilva.loadable.map
 import java.io.NotSerializableException
@@ -47,10 +48,15 @@ fun <I, O> Flow<Loadable<I>>.innerMap(transform: suspend (I) -> O): Flow<Loadabl
  * thrown [Throwable]s.
  *
  * **NOTE**: Emitting a value that cannot be serialized to the resulting [Flow] and performing a
- * terminal operation on it will result in a [NotSerializableException] being thrown.
+ * terminal operation on it will result while [serializability] is
+ * [enforced][Serializability.ENFORCED] in a [NotSerializableException] being thrown.
+ *
+ * @param serializability Determines whether the values emitted to this [Flow] and sent to the
+ * created one should be serializable.
  **/
-fun <T> Flow<T>.loadable(): Flow<Loadable<T>> {
-    return loadableFlow {
+fun <T> Flow<T>.loadable(serializability: Serializability = Serializability.default):
+    Flow<Loadable<T>> {
+    return loadableFlow(serializability) {
         collect(::load)
     }
 }
@@ -64,12 +70,13 @@ fun <T> Flow<T>.loadable(): Flow<Loadable<T>> {
  * [loaded][Loadable.Loaded];
  * - [LoadableScope.fail] with the [error][Loadable.Failed.error] when [failed][Loadable.Failed].
  *
+ * @param loadableScope [LoadableScope] to load [Loadable]s to.
  * @throws NotSerializableException If a value that cannot be serialized is emitted to this [Flow]
  * and, consequently, sent to the [loadableScope].
  **/
 @Throws(NotSerializableException::class)
 suspend fun <T> Flow<T>.loadTo(loadableScope: LoadableScope<T>) {
-    loadable()
+    loadable(loadableScope.serializability)
         // Ignores the initial loading stage, since public Loadable-Flow-creator functions'
         // LoadableScope always loads.
         .ignore(1)
@@ -114,11 +121,16 @@ fun <T : Any> Flow<Loadable<T?>>.unwrapContent(): Flow<Loadable<T>> {
  * Creates a [Flow] of [Loadable]s that emits them through [load] with a [LoadableScope] and has an
  * initial [loading][Loadable.Loading] value.
  *
+ * @param serializability Determines whether the [loaded][Loadable.Loaded]
+ * [content][Loadable.Loaded.content] emitted to to the created [Flow] should be serializable.
  * @param load Operations to be made on the [LoadableScope] responsible for emitting [Loadable]s
  * sent to it to the created [Flow].
  **/
-fun <T> loadableFlow(load: suspend LoadableScope<T>.() -> Unit): Flow<Loadable<T>> {
-    return emptyLoadableFlow {
+fun <T> loadableFlow(
+    serializability: Serializability = Serializability.default,
+    load: suspend LoadableScope<T>.() -> Unit
+): Flow<Loadable<T>> {
+    return emptyLoadableFlow(serializability) {
         load()
         load.invoke(this)
     }
@@ -144,12 +156,17 @@ fun <T> loadableChannelFlow(@BuilderInference block: suspend ProducerScope<Loada
  * Creates a [Flow] of [Loadable]s that emits them through [load] with a [LoadableScope]. Doesn't
  * have any initial value (hence its emptiness).
  *
+ * @param serializability Determines whether the [loaded][Loadable.Loaded]
+ * [content][Loadable.Loaded.content] emitted to to the created [Flow] should be serializable.
  * @param load Operations to be made on the [LoadableScope] responsible for emitting [Loadable]s
  * sent to it to the created [Flow].
  **/
-internal fun <T> emptyLoadableFlow(load: suspend LoadableScope<T>.() -> Unit): Flow<Loadable<T>> {
+internal fun <T> emptyLoadableFlow(
+    serializability: Serializability = Serializability.default,
+    load: suspend LoadableScope<T>.() -> Unit
+): Flow<Loadable<T>> {
     return flow<Loadable<T>> {
-        FlowCollectorLoadableScope(this).apply {
+        FlowCollectorLoadableScope(serializability, this).apply {
             load.invoke(this)
         }
     }

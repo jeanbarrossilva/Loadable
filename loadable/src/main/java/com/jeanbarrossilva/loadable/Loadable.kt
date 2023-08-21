@@ -16,14 +16,18 @@ sealed interface Loadable<T> : Serializable {
      * Stage in which the content has been successfully loaded.
      *
      * @param content Value that's been loaded.
-     * @throws NotSerializableException If [content] cannot be serialized.
+     * @param serializability Determines whether the [content] should be serializable.
+     * @throws NotSerializableException If [serializability] is [enforced][Serializability.ENFORCED]
+     * and the [content] cannot be serialized.
      **/
-    @JvmInline
-    value class Loaded<T>
+    data class Loaded<T>
     @Throws(NotSerializableException::class)
-    constructor(val content: T) : Loadable<T> {
+    constructor(
+        val content: T,
+        @PublishedApi internal val serializability: Serializability = Serializability.default
+    ) : Loadable<T> {
         init {
-            requireSerializable(content)
+            serializability.check(content)
         }
     }
 

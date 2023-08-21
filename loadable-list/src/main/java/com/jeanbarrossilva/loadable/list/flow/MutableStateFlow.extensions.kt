@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.loadable.list.flow
 
+import com.jeanbarrossilva.loadable.Serializability
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.SerializableList
 import com.jeanbarrossilva.loadable.list.serializableListOf
@@ -17,11 +18,16 @@ fun <T> listLoadableFlow(): MutableStateFlow<ListLoadable<T>> {
  * matches the given [content].
  *
  * @param content [Array] from which the [ListLoadable] will be created.
- * @throws NotSerializableException If any of the [content]'s elements cannot be serialized.
+ * @param serializability Determines whether each [content] element should be serializable.
+ * @throws NotSerializableException If [serializability] is [enforced][Serializability.ENFORCED] and
+ * any of the [content]'s elements cannot be serialized.
  **/
 @Throws(NotSerializableException::class)
-fun <T> listLoadableFlowOf(vararg content: T): MutableStateFlow<ListLoadable<T>> {
-    return listLoadableFlowOf(serializableListOf(*content))
+fun <T> listLoadableFlowOf(
+    vararg content: T,
+    serializability: Serializability = Serializability.default
+): MutableStateFlow<ListLoadable<T>> {
+    return listLoadableFlowOf(serializableListOf(*content, serializability = serializability))
 }
 
 /**

@@ -47,5 +47,10 @@ enum class Serializability {
      * serialized.
      **/
     @Throws(NotSerializableException::class)
-    internal abstract fun <T> check(content: T)
+    abstract fun <T> check(content: T)
+
+    companion object {
+        /** [Serializability] that's used by default throughout the library. **/
+        val default = IGNORED
+    }
 }

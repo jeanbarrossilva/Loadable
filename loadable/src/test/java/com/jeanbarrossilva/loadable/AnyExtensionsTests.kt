@@ -1,9 +1,7 @@
 package com.jeanbarrossilva.loadable
 
-import java.io.NotSerializableException
 import java.util.Stack
 import kotlin.test.Test
-import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
 import kotlin.test.assertNull
 import org.junit.Assert.assertEquals
@@ -33,17 +31,5 @@ internal class AnyExtensionsTests {
     @Test
     fun `GIVEN a non-null object WHEN converting it into a Loadable of a different type THEN it's null`() { // ktlint-disable max-line-length
         assertNull(0.loadable<Array<Stack<String>>>())
-    }
-
-    @Test
-    fun `GIVEN an un-serializable object WHEN requiring it to be serializable THEN it throws`() {
-        assertFailsWith<NotSerializableException> {
-            requireSerializable(Thread.UncaughtExceptionHandler { _, _ -> })
-        }
-    }
-
-    @Test
-    fun `GIVEN a serializable object WHEN requiring it to be serializable THEN it is`() {
-        requireSerializable(listOf(1, 2, 3))
     }
 }

@@ -197,7 +197,7 @@ internal class FlowExtensionsTests {
     @Test
     fun `GIVEN a Loadable Flow that's Loading WHEN sending its Loadables into a LoadableScope THEN it loads`() { // ktlint-disable max-line-length
         runTest {
-            emptyLoadableFlow(loadableFlow<Any?>()::sendTo).test {
+            emptyLoadableFlow(load = loadableFlow<Any?>()::sendTo).test {
                 assertIs<Loadable.Loading<Any?>>(awaitItem())
             }
         }
@@ -207,7 +207,7 @@ internal class FlowExtensionsTests {
     @Test
     fun `GIVEN a Loadable Flow that's Loaded WHEN sending its Loadables into a LoadableScope THEN it loads the content`() { // ktlint-disable max-line-length
         runTest {
-            loadableFlow(loadableFlowOf(0)::sendTo).test {
+            loadableFlow(load = loadableFlowOf(0)::sendTo).test {
                 awaitItem()
                 assertEquals(Loadable.Loaded(0), awaitItem())
             }

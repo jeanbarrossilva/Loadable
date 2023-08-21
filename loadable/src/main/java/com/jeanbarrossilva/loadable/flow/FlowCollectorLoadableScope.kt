@@ -2,6 +2,7 @@ package com.jeanbarrossilva.loadable.flow
 
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.LoadableScope
+import com.jeanbarrossilva.loadable.Serializability
 import kotlinx.coroutines.flow.FlowCollector
 
 /**
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.FlowCollector
  **/
 @PublishedApi
 internal class FlowCollectorLoadableScope<T>(
+    override val serializability: Serializability,
     private val collector: FlowCollector<Loadable<T>>
 ) : LoadableScope<T>() {
     override suspend fun send(loadable: Loadable<T>) {

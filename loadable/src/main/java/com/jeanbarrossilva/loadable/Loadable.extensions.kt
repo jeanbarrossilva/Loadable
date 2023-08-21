@@ -36,7 +36,7 @@ inline fun <I, O> Loadable<I>.ifLoaded(operation: I.() -> O): O? {
 inline fun <I, O> Loadable<I>.map(transform: (I) -> O): Loadable<O> {
     return when (this) {
         is Loadable.Loading -> Loadable.Loading()
-        is Loadable.Loaded -> Loadable.Loaded(transform(content))
+        is Loadable.Loaded -> Loadable.Loaded(transform(content), serializability)
         is Loadable.Failed -> Loadable.Failed(error)
     }
 }
