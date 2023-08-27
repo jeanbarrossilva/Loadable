@@ -1,11 +1,13 @@
 package com.jeanbarrossilva.loadable.list.flow
 
 import com.jeanbarrossilva.loadable.Loadable
+import com.jeanbarrossilva.loadable.Serializability
 import com.jeanbarrossilva.loadable.flow.loadable
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.ListLoadableScope
 import com.jeanbarrossilva.loadable.list.SerializableList
 import com.jeanbarrossilva.loadable.list.toListLoadable
+import com.jeanbarrossilva.loadable.list.toSerializableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -15,6 +17,27 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+
+/**
+ * Maps each emission to a [ListLoadable] and emits an initial [loading][ListLoadable.Loading]
+ * value.
+ *
+ * @param coroutineScope [CoroutineScope] in which the [StateFlow] will be started and its
+ * [value][StateFlow.value] will be shared.
+ * @param sharingStarted Strategy for controlling when sharing starts and ends.
+ * @param serializability Determines whether each of the elements of the [Collection]s emitted to
+ * this [Flow] should be serializable.
+ **/
+inline fun <reified T> Flow<Collection<T>>.listLoadable(
+    coroutineScope: CoroutineScope,
+    sharingStarted: SharingStarted,
+    serializability: Serializability = Serializability.default
+): StateFlow<ListLoadable<T>> {
+    return map { it.toSerializableList(serializability) }.listLoadable(
+        coroutineScope,
+        sharingStarted
+    )
+}
 
 /**
  * Maps each emission to a [ListLoadable] and emits an initial [loading][ListLoadable.Loading]

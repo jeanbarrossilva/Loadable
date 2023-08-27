@@ -5,7 +5,6 @@ import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.flow.loadableFlow
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.SerializableList
-import com.jeanbarrossilva.loadable.list.emptySerializableList
 import com.jeanbarrossilva.loadable.list.serializableListOf
 import com.jeanbarrossilva.loadable.list.toListLoadable
 import kotlin.test.Test
@@ -51,7 +50,7 @@ internal class FlowExtensionsTests {
     @Test
     fun `GIVEN a Flow WHEN converting it into a ListLoadable Flow THEN the initial value is loading`() { // ktlint-disable max-line-length
         runTest {
-            flowOf(serializableListOf(1, 2, 3)).listLoadable(this, SharingStarted.Lazily).test {
+            flowOf(listOf(1, 2, 3)).listLoadable(this, SharingStarted.Lazily).test {
                 assertIs<ListLoadable.Loading<Int>>(awaitItem())
             }
         }
@@ -60,7 +59,7 @@ internal class FlowExtensionsTests {
     @Test
     fun `GIVEN a Flow with an empty list WHEN converting it into a ListLoadable THEN it is empty`() { // ktlint-disable max-line-length
         runTest {
-            flowOf(emptySerializableList<Int>())
+            flowOf(emptyList<Int>())
                 .listLoadable(this, SharingStarted.Lazily)
                 .filterNotLoading()
                 .test { assertIs<ListLoadable.Empty<Int>>(awaitItem()) }
@@ -70,7 +69,7 @@ internal class FlowExtensionsTests {
     @Test
     fun `GIVEN a Flow with a populated list WHEN converting it into a ListLoadable THEN it is populated`() { // ktlint-disable max-line-length
         runTest {
-            flowOf(serializableListOf(1, 2, 3))
+            flowOf(listOf(1, 2, 3))
                 .listLoadable(this, SharingStarted.Lazily)
                 .filterNotLoading()
                 .test {
